@@ -1,0 +1,406 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&family=JetBrains+Mono:wght@400;700&family=Outfit:wght@700;900&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* === 色彩系统 === */
+    /* 主品牌色 - 科技蓝 */
+    --primary-50: 217 91% 95%;
+    --primary-100: 217 91% 85%;
+    --primary-500: 217 91% 60%;
+    --primary-600: 217 91% 50%;
+    --primary-900: 217 91% 20%;
+
+    /* 语义色 */
+    --success: 142 76% 45%;
+    --warning: 38 92% 50%;
+    --error: 0 84% 60%;
+    --info: 199 89% 48%;
+
+    /* 中性色 */
+    --background: 0 0% 2%;
+    --surface: 0 0% 5%;
+    --surface-elevated: 0 0% 8%;
+    --foreground: 0 0% 98%;
+    --muted: 0 0% 60%;
+    --border: 0 0% 100% / 0.1;
+
+    /* Shadcn 兼容 */
+    --card: 0 0% 5%;
+    --card-foreground: 0 0% 98%;
+    --popover: 0 0% 5%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 217 91% 60%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 217 32% 17%;
+    --secondary-foreground: 0 0% 98%;
+    --muted-foreground: 0 0% 60%;
+    --accent: 217 32% 17%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 98%;
+    --input: 0 0% 100% / 0.1;
+    --ring: 217 91% 60%;
+
+    /* === 排版系统 === */
+    --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+    --font-display: 'Outfit', 'Inter', sans-serif;
+
+    /* === 间距系统 === */
+    --space-1: 0.25rem;
+    --space-2: 0.5rem;
+    --space-3: 0.75rem;
+    --space-4: 1rem;
+    --space-6: 1.5rem;
+    --space-8: 2rem;
+    --space-12: 3rem;
+    --space-16: 4rem;
+
+    /* === 圆角系统 === */
+    --radius-sm: 0.375rem;
+    --radius-md: 0.5rem;
+    --radius-lg: 0.75rem;
+    --radius-xl: 1rem;
+    --radius-2xl: 1.5rem;
+    --radius: 0.75rem;
+
+    /* === 动画系统 === */
+    --duration-fast: 150ms;
+    --duration-normal: 250ms;
+    --duration-slow: 400ms;
+    --duration-slower: 600ms;
+
+    --ease-natural: cubic-bezier(0.4, 0.0, 0.2, 1);
+    --ease-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    --ease-out: cubic-bezier(0.0, 0.0, 0.2, 1);
+    --ease-in: cubic-bezier(0.4, 0.0, 1, 1);
+  }
+}
+
+@layer base {
+  * {
+    border-color: hsl(var(--border));
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: var(--font-sans);
+    font-feature-settings: "rlig" 1, "calt" 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* 焦点指示器 */
+  *:focus-visible {
+    outline: 2px solid hsl(var(--primary-500));
+    outline-offset: 2px;
+    border-radius: var(--radius-sm);
+  }
+}
+
+/* === 玻璃态组件 === */
+@layer components {
+  .glass-card {
+    background: linear-gradient(135deg,
+        rgba(255, 255, 255, 0.05) 0%,
+        rgba(255, 255, 255, 0.02) 100%);
+    backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow:
+      0 8px 32px rgba(0, 0, 0, 0.3),
+      inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  }
+
+  .glass-nav {
+    background: rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(24px) saturate(180%);
+    border-right: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .glass-button {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all var(--duration-normal) var(--ease-natural);
+  }
+
+  .glass-button:hover {
+    background: rgba(255, 255, 255, 0.15);
+    transform: translateY(-2px);
+  }
+
+  .glass-button:active {
+    transform: translateY(0);
+    transition-duration: var(--duration-fast);
+  }
+}
+
+/* === 微动画 === */
+@layer utilities {
+
+  /* 按钮悬停 */
+  .btn-hover {
+    transition: all var(--duration-normal) var(--ease-natural);
+  }
+
+  .btn-hover:hover {
+    transform: translateY(-2px);
+    filter: brightness(1.1);
+  }
+
+  .btn-hover:active {
+    transform: translateY(0);
+    transition-duration: var(--duration-fast);
+  }
+
+  /* 卡片进入动画 */
+  @keyframes card-enter {
+    from {
+      opacity: 0;
+      transform: translateY(20px) scale(0.95);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  .animate-card-enter {
+    animation: card-enter var(--duration-slow) var(--ease-natural);
+  }
+
+  /* 骨架加载 */
+  @keyframes skeleton-pulse {
+
+    0%,
+    100% {
+      opacity: 0.4;
+    }
+
+    50% {
+      opacity: 0.7;
+    }
+  }
+
+  .skeleton {
+    background: linear-gradient(90deg,
+        rgba(255, 255, 255, 0.05) 0%,
+        rgba(255, 255, 255, 0.1) 50%,
+        rgba(255, 255, 255, 0.05) 100%);
+    background-size: 200% 100%;
+    animation: skeleton-pulse 1.5s ease-in-out infinite;
+  }
+
+  /* 状态徽章脉冲 */
+  @keyframes badge-pulse {
+
+    0%,
+    100% {
+      box-shadow: 0 0 0 0 currentColor;
+    }
+
+    50% {
+      box-shadow: 0 0 0 8px transparent;
+    }
+  }
+
+  .badge-live {
+    animation: badge-pulse 2s ease-in-out infinite;
+  }
+
+  /* 淡入动画 */
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+    }
+
+    to {
+      opacity: 1;
+    }
+  }
+
+  .animate-in {
+    animation: fade-in var(--duration-normal) var(--ease-natural);
+  }
+
+  /* 滑入动画 */
+  @keyframes slide-in-from-right {
+    from {
+      transform: translateX(100%);
+    }
+
+    to {
+      transform: translateX(0);
+    }
+  }
+
+  .slide-in-from-right {
+    animation: slide-in-from-right var(--duration-slow) var(--ease-natural);
+  }
+
+  /* 缩放进入 */
+  @keyframes zoom-in-95 {
+    from {
+      opacity: 0;
+      transform: scale(0.95);
+    }
+
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  .zoom-in-95 {
+    animation: zoom-in-95 var(--duration-normal) var(--ease-bounce);
+  }
+
+  /* 成功庆祝动画 */
+  @keyframes success-celebration {
+    0% {
+      transform: scale(0);
+      opacity: 0;
+    }
+
+    50% {
+      transform: scale(1.2);
+    }
+
+    100% {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+
+  .success-icon {
+    animation: success-celebration 600ms var(--ease-bounce);
+  }
+
+  /* Tab 淡入 */
+  @keyframes tab-fade-in {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .tab-content {
+    animation: tab-fade-in 300ms ease;
+  }
+
+  /* 搜索高亮 */
+  @keyframes highlight-flash {
+
+    0%,
+    100% {
+      background: rgba(251, 191, 36, 0.3);
+    }
+
+    50% {
+      background: rgba(251, 191, 36, 0.6);
+    }
+  }
+
+  .search-highlight {
+    background: rgba(251, 191, 36, 0.3);
+    padding: 2px 4px;
+    border-radius: 3px;
+    animation: highlight-flash 500ms ease;
+  }
+
+  /* 发光效果 */
+  .glow-primary {
+    box-shadow: 0 0 20px hsla(217, 91%, 60%, 0.4);
+  }
+
+  .glow-success {
+    box-shadow: 0 0 15px hsla(142, 76%, 45%, 0.3);
+  }
+
+  .glow-warning {
+    box-shadow: 0 0 15px hsla(38, 92%, 50%, 0.3);
+  }
+
+  .glow-error {
+    box-shadow: 0 0 15px hsla(0, 84%, 60%, 0.3);
+  }
+}
+
+/* === 滚动条样式 === */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 9999px;
+  transition: background var(--duration-normal);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* === 选择文本样式 === */
+::selection {
+  background: hsla(217, 91%, 60%, 0.3);
+  color: hsl(0, 0%, 98%);
+}
+
+/* === 代码块样式 === */
+.code-block {
+  background: rgba(0, 0, 0, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-lg);
+  padding: var(--space-4);
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+  position: relative;
+  overflow-x: auto;
+}
+
+.code-keyword {
+  color: hsl(286, 60%, 67%);
+}
+
+.code-string {
+  color: hsl(95, 38%, 62%);
+}
+
+.code-function {
+  color: hsl(207, 82%, 66%);
+}
+
+.code-comment {
+  color: hsl(0, 0%, 50%);
+  font-style: italic;
+}
+
+/* === 性能优化 === */
+.will-change-transform {
+  will-change: transform;
+}
+
+.will-change-opacity {
+  will-change: opacity;
+}
+
+.gpu-accelerated {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
