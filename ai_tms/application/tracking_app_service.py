@@ -1,5 +1,6 @@
 from typing import List, Optional, Dict, Any
 from datetime import datetime
+import uuid
 def get_now_str():
     return datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 from database.db_manager import DatabaseManager
