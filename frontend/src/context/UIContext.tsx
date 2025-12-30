@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, useCallback, type ReactNode } from 'react';
 
-type ModalType = 'NEW_REQUEST' | 'NEW_EVENT' | 'EDIT_EVENT' | 'USER_JOURNEY_DEMO' | null;
+type ModalType = 'NEW_REQUEST' | 'NEW_EVENT' | 'EDIT_EVENT' | 'NEW_PARAMETER' | 'NEW_PAGE' | 'USER_JOURNEY_DEMO' | null;
 
 interface UIContextType {
     activeModal: ModalType;

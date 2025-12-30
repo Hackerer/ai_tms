@@ -19,7 +19,7 @@ interface Parameter {
 }
 
 export const ParameterPool = () => {
-    const { showToast } = useUI();
+    const { showToast, openModal } = useUI();
     const navigate = useNavigate();
     const [parameters, setParameters] = useState<Parameter[]>([]);
     const [selectedCategory, setSelectedCategory] = useState('all');
@@ -227,7 +227,7 @@ export const ParameterPool = () => {
                             高级筛选
                         </button>
                         <button
-                            onClick={() => showToast('新建参数功能开发中...', 'info')}
+                            onClick={() => openModal('NEW_PARAMETER')}
                             className="flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-white text-xs font-bold shadow-[0_0_15px_rgba(59,130,246,0.3)] hover:brightness-110 active:scale-95 transition-all"
                         >
                             <Plus className="w-3.5 h-3.5" />

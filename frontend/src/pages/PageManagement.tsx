@@ -79,7 +79,7 @@ const PageTreeNode = ({ page, onSelect, selectedId, level = 0 }: {
 
 export const PageManagement = () => {
     const navigate = useNavigate();
-    const { showToast } = useUI();
+    const { showToast, openModal } = useUI();
     const [pages, setPages] = useState<Page[]>([]);
     const [selectedPage, setSelectedPage] = useState<Page | null>(null);
     const [isLoading, setIsLoading] = useState(false);
@@ -178,7 +178,7 @@ export const PageManagement = () => {
                                 批量导入
                             </button>
                             <button
-                                onClick={() => showToast('新建页面功能开发中...', 'info')}
+                                onClick={() => openModal('NEW_PAGE')}
                                 className="px-4 py-2 rounded-lg bg-primary text-white text-xs font-bold shadow-[0_0_15px_rgba(59,130,246,0.3)] hover:brightness-110 active:scale-95 transition-all"
                             >
                                 <Plus className="w-3.5 h-3.5 inline mr-1" />

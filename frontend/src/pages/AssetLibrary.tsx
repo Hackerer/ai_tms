@@ -229,7 +229,7 @@ export const AssetLibrary = () => {
                             高级筛选
                         </button>
                         <button
-                            onClick={() => openModal('NEW_REQUEST')}
+                            onClick={() => openModal('NEW_EVENT')}
                             className="flex items-center gap-2 px-4 py-1.5 rounded-lg bg-primary text-white text-xs font-bold shadow-[0_0_15px_rgba(59,130,246,0.3)] hover:brightness-110 active:scale-95 transition-all"
                         >
                             <Plus className="w-3.5 h-3.5" />
