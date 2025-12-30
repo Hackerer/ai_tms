@@ -1,0 +1,46 @@
+name: TMS-CD
+
+on:
+  push:
+    branches: [ develop, release/*, main ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set Environment Name
+      id: env_name
+      run: |
+        if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
+          echo "deploy_env=production" >> $GITHUB_OUTPUT
+        elif [[ "${{ github.ref }}" == "refs/heads/release/"* ]]; then
+          echo "deploy_env=staging" >> $GITHUB_OUTPUT
+        else
+          echo "deploy_env=test" >> $GITHUB_OUTPUT
+        fi
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install werkzeug
+
+    - name: Initialize Environment & Database
+      env:
+        APP_ENV: ${{ steps.env_name.outputs.deploy_env }}
+      run: |
+        # 初始化该环境对应的数据库
+        python cli.py init
+        echo "✅ Environment ${{ steps.env_name.outputs.deploy_env }} initialized."
+
+    - name: Deploy (Simulated)
+      run: |
+        echo "🚀 Deploying to ${{ steps.env_name.outputs.deploy_env }} environment..."
+        # 这里可以是 docker push, rsync, 或者 aws sls deploy 等命令
+        echo "✅ Deployment successful."
