@@ -19,6 +19,13 @@
     --background: 0 0% 2%;
     --surface: 0 0% 5%;
     --surface-elevated: 0 0% 8%;
+    /* MD3 Surface Tones (Dark) */
+    --surface-container-lowest: 0 0% 4%;
+    --surface-container-low: 0 0% 6%;
+    --surface-container: 0 0% 8%;
+    --surface-container-high: 0 0% 10%;
+    --surface-container-highest: 0 0% 13%;
+
     --foreground: 0 0% 98%;
     --muted: 0 0% 60%;
     --border: 0 0% 100% / 0.08;
@@ -89,6 +96,12 @@
     /* Alice Blue-ish */
     --surface: 0 0% 100%;
     --surface-elevated: 0 0% 100%;
+    /* MD3 Surface Tones (Light) */
+    --surface-container-lowest: 0 0% 100%;
+    --surface-container-low: 210 20% 96%;
+    --surface-container: 210 20% 94%;
+    --surface-container-high: 210 20% 92%;
+    --surface-container-highest: 210 20% 90%;
     --foreground: var(--slate-900);
     --muted: var(--slate-500);
     --border: var(--slate-200);

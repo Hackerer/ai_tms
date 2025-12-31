@@ -49,9 +49,9 @@ export const ParameterSelector = ({ onSelect, onCreate, className, autoFocus }: 
     };
 
     return (
-        <div className={cn("w-[400px] bg-[#1A1A1A] border border-white/10 rounded-xl shadow-2xl overflow-hidden flex flex-col", className)}>
-            <div className="p-3 border-b border-white/10 bg-white/[0.02]">
-                <div className="flex items-center gap-2 bg-black/40 border border-white/10 rounded-lg px-3 py-2 focus-within:ring-1 focus-within:ring-primary/50 transition-all">
+        <div className={cn("w-[400px] bg-popover border border-border rounded-xl shadow-2xl overflow-hidden flex flex-col", className)}>
+            <div className="p-3 border-b border-border bg-muted/5">
+                <div className="flex items-center gap-2 bg-muted/20 border border-border rounded-lg px-3 py-2 focus-within:ring-1 focus-within:ring-primary/50 transition-all">
                     <Search className="w-4 h-4 text-muted-foreground" />
                     <input
                         ref={inputRef}
@@ -63,7 +63,7 @@ export const ParameterSelector = ({ onSelect, onCreate, className, autoFocus }: 
                         }}
                         onKeyDown={handleKeyDown}
                         placeholder="搜索参数库或新建..."
-                        className="w-full bg-transparent border-none outline-none text-sm placeholder:text-muted-foreground/50 h-5"
+                        className="w-full bg-transparent border-none outline-none text-sm text-foreground placeholder:text-muted-foreground/50 h-5"
                     />
                 </div>
             </div>
@@ -91,30 +91,30 @@ export const ParameterSelector = ({ onSelect, onCreate, className, autoFocus }: 
                         onMouseEnter={() => setSelectedIndex(index)}
                         className={cn(
                             "mx-2 px-3 py-2 rounded-lg cursor-pointer transition-colors flex items-center justify-between group",
-                            index === selectedIndex ? "bg-primary/10" : "hover:bg-white/5"
+                            index === selectedIndex ? "bg-accent" : "hover:bg-muted/5"
                         )}
                     >
                         <div className="flex flex-col gap-0.5 min-w-0">
                             <div className="flex items-center gap-2">
                                 <span className={cn(
                                     "font-mono text-sm font-bold truncate",
-                                    index === selectedIndex ? "text-primary" : "text-white"
+                                    index === selectedIndex ? "text-primary" : "text-foreground"
                                 )}>
                                     {param.name}
                                 </span>
                                 <span className={cn(
-                                    "text-[10px] px-1.5 rounded border border-white/5 bg-white/5 text-muted-foreground",
-                                    param.category === 'global' ? "bg-blue-500/10 text-blue-300 border-blue-500/10" : ""
+                                    "text-[10px] px-1.5 rounded border border-border bg-muted/10 text-muted-foreground",
+                                    param.category === 'global' ? "bg-blue-500/10 text-blue-500 border-blue-500/10" : ""
                                 )}>
                                     {param.data_type}
                                 </span>
                             </div>
-                            <span className="text-xs text-muted-foreground truncate group-hover:text-white/70 transition-colors">
+                            <span className="text-xs text-muted-foreground truncate group-hover:text-foreground/80 transition-colors">
                                 {param.description}
                             </span>
                         </div>
                         {index === selectedIndex && (
-                            <span className="text-[10px] text-muted-foreground bg-white/10 px-1.5 py-0.5 rounded">Enter 选中</span>
+                            <span className="text-[10px] text-muted-foreground bg-background/50 px-1.5 py-0.5 rounded">Enter 选中</span>
                         )}
                     </div>
                 ))}
@@ -122,13 +122,13 @@ export const ParameterSelector = ({ onSelect, onCreate, className, autoFocus }: 
                 {/* Create New Option */}
                 {query && (
                     <>
-                        <div className="h-px bg-white/10 mx-4 my-2" />
+                        <div className="h-px bg-border mx-4 my-2" />
                         <div
                             onClick={() => onCreate(query)}
                             onMouseEnter={() => setSelectedIndex(filteredParams.length)}
                             className={cn(
                                 "mx-2 px-3 py-2 rounded-lg cursor-pointer transition-colors flex items-center gap-3",
-                                selectedIndex === filteredParams.length ? "bg-primary text-white shadow-lg shadow-primary/20" : "text-primary hover:bg-white/5"
+                                selectedIndex === filteredParams.length ? "bg-primary text-white shadow-lg shadow-primary/20" : "text-primary hover:bg-muted/5"
                             )}
                         >
                             <div className={cn(
@@ -152,7 +152,7 @@ export const ParameterSelector = ({ onSelect, onCreate, className, autoFocus }: 
             </div>
 
             {/* Footer Tip */}
-            <div className="px-4 py-2 border-t border-white/10 bg-white/[0.02] text-[10px] text-muted-foreground flex justify-between">
+            <div className="px-4 py-2 border-t border-border bg-muted/5 text-[10px] text-muted-foreground flex justify-between">
                 <span>↑↓ 导航</span>
                 <span>Enter 确认</span>
             </div>

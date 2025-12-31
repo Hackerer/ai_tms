@@ -22,7 +22,7 @@ export const ParameterFinderModal = ({ isOpen, onClose, onSelect, onCreate }: Pa
             ref_id: assetParam.id,
             category: assetParam.category as 'global' | 'business'
         });
-        onClose();
+        // onClose(); // Removed to allow multi-select
     };
 
     return (

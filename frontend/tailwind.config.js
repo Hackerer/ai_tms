@@ -45,6 +45,11 @@ export default {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
+        '4xl': "1.75rem", // 28px for MD3 Navigation Drawer / Large Modals
+      },
+      transitionTimingFunction: {
+        'md3-emphasized': 'cubic-bezier(0.2, 0.0, 0.0, 1.0)',
+        'md3-standard': 'cubic-bezier(0.2, 0.0, 0.2, 1)',
       },
       backdropBlur: {
         xs: '2px',

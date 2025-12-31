@@ -169,8 +169,9 @@ export const Workbench = () => {
             addParameter(activeEventIndex, param);
             showToast(`已引用参数: ${param.key}`, 'success');
         }
-        setIsSelectorOpen(false);
-        setActiveEventIndex(null);
+        // Keep modal open for multi-select
+        // setIsSelectorOpen(false);
+        // setActiveEventIndex(null);
     };
 
     const handleSelectorCreate = (keyword: string) => {
@@ -204,20 +205,20 @@ export const Workbench = () => {
 
     return (
         <div className="flex-1 flex flex-col overflow-hidden bg-background">
-            {/* Header - Fixed & Glass */}
-            <div className="h-16 border-b border-border flex items-center justify-between px-6 bg-background/80 backdrop-blur-md sticky top-0 z-30 transition-all">
+            {/* Header - Fixed & Glass - MD3 Standard */}
+            <div className="h-18 border-b-0 flex items-center justify-between px-6 bg-background/80 backdrop-blur-md sticky top-0 z-30 transition-all shadow-sm">
                 <div className="flex items-center gap-4">
                     <button
                         onClick={() => navigate('/workflows')}
-                        className="p-2 hover:bg-muted/10 rounded-full text-muted-foreground hover:text-foreground transition-colors group"
+                        className="p-3 hover:bg-muted/10 rounded-full text-muted-foreground hover:text-foreground transition-colors group"
                     >
-                        <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
+                        <ArrowLeft className="w-6 h-6 group-hover:-translate-x-1 transition-transform" />
                     </button>
                     <div className="flex flex-col">
                         <div className="flex items-center gap-3">
-                            <h2 className="text-lg font-bold tracking-tight text-foreground">{request.title}</h2>
+                            <h2 className="text-xl font-bold tracking-tight text-foreground line-clamp-1">{request.title}</h2>
                             <span className={cn(
-                                "px-2 py-0.5 rounded text-[10px] font-bold tracking-widest border uppercase",
+                                "px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-widest border uppercase",
                                 request.status === 'Draft' ? "bg-orange-500/10 text-orange-600 border-orange-500/20" :
                                     request.status === 'Reviewing' ? "bg-blue-500/10 text-blue-600 border-blue-500/20" :
                                         request.status === 'Approved' ? "bg-green-500/10 text-green-600 border-green-500/20" :
@@ -226,7 +227,7 @@ export const Workbench = () => {
                                 {request.status}
                             </span>
                         </div>
-                        <p className="text-[10px] text-muted-foreground font-mono mt-0.5 uppercase tracking-wide">
+                        <p className="text-xs text-muted-foreground font-mono mt-0.5 uppercase tracking-wide opacity-70">
                             REQ #{request.id} • Alex Chen
                         </p>
                     </div>
@@ -566,7 +567,7 @@ export const Workbench = () => {
             />
             <ParameterFinderModal
                 isOpen={isSelectorOpen}
-                onClose={() => setIsSelectorOpen(false)}
+                onClose={() => { setIsSelectorOpen(false); setActiveEventIndex(null); }}
                 onSelect={handleSelectorSelect}
                 onCreate={handleSelectorCreate}
             />
