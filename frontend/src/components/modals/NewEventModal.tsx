@@ -43,7 +43,7 @@ export const NewEventModal = () => {
         setParameters(parameters.filter((_, i) => i !== index));
     };
 
-    const handleParamChange = (index: number, field: keyof Parameter, value: any) => {
+    const handleParamChange = (index: number, field: keyof Parameter, value: string | boolean) => {
         const newParams = [...parameters];
         newParams[index] = { ...newParams[index], [field]: value };
         setParameters(newParams);

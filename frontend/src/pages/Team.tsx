@@ -13,7 +13,23 @@ import { cn } from '../lib/utils';
 import { useState } from 'react';
 import { useUI } from '../context/UIContext';
 
-const UserRow = ({ name, email, role, status }: any) => {
+// --- Types ---
+interface UserRowProps {
+    name: string;
+    email: string;
+    role: 'Admin' | 'Editor' | 'Viewer';
+    status: 'Active' | 'Offline';
+}
+
+interface GroupCardProps {
+    name: string;
+    description: string;
+    memberCount: number;
+    appCount: number;
+}
+
+
+const UserRow = ({ name, email, role, status }: UserRowProps) => {
     const { openModal } = useUI();
     return (
         <tr
@@ -58,7 +74,7 @@ const UserRow = ({ name, email, role, status }: any) => {
     );
 };
 
-const GroupCard = ({ name, description, memberCount, appCount }: any) => {
+const GroupCard = ({ name, description, memberCount, appCount }: GroupCardProps) => {
     const { openModal } = useUI();
     return (
         <div

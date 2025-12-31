@@ -70,9 +70,9 @@ export const TreeProvider = ({ children }: { children: ReactNode }) => {
         }
     };
 
-    const buildTree = (flatPages: any[], appId: string): TreeNode[] => {
+    const buildTree = (flatPages: { id: string; name: string; path: string; parent_id: string | null; module: string; app_id: string }[], appId: string): TreeNode[] => {
         // 按 module 分组
-        const moduleMap: Record<string, any[]> = {};
+        const moduleMap: Record<string, typeof flatPages> = {};
 
         flatPages.forEach(page => {
             const moduleName = page.module || '未分类';
@@ -109,7 +109,7 @@ export const TreeProvider = ({ children }: { children: ReactNode }) => {
         return [appNode];
     };
 
-    const buildPageTree = (flatPages: any[]): TreeNode[] => {
+    const buildPageTree = (flatPages: { id: string; name: string; path: string; parent_id: string | null; module: string; app_id: string }[]): TreeNode[] => {
         const map: Record<string, TreeNode> = {};
         const roots: TreeNode[] = [];
 
@@ -119,12 +119,11 @@ export const TreeProvider = ({ children }: { children: ReactNode }) => {
                 id: page.id,
                 name: page.name,
                 type: 'page',
-                parent_id: page.parent_id,
+                parent_id: page.parent_id || undefined,
                 path: page.path,
                 module: page.module,
                 app_id: page.app_id,
                 children: [],
-                event_count: Math.floor(Math.random() * 10) + 1, // Mock 事件数量
             };
         });
 
@@ -159,7 +158,7 @@ export const TreeProvider = ({ children }: { children: ReactNode }) => {
 };
 
 // --- Hook ---
-
+// eslint-disable-next-line react-refresh/only-export-components
 export const useTree = () => {
     const context = useContext(TreeContext);
     if (!context) {
