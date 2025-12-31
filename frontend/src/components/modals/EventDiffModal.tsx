@@ -1,13 +1,7 @@
 import { X, ArrowRight, Plus, Minus, Edit3, AlertCircle } from 'lucide-react';
-import { cn } from '../lib/utils';
+import { cn } from '../../lib/utils';
+import type { WorkflowParameter as Parameter } from '../../types/workflow';
 
-// 参数类型定义
-interface Parameter {
-    key: string;
-    type: string;
-    desc: string;
-    isRequired: boolean;
-}
 
 // 变更类型
 type ChangeType = 'added' | 'removed' | 'modified' | 'unchanged';

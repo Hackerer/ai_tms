@@ -1,14 +1,9 @@
 import { X, Plus, Trash2, CheckCircle2 } from 'lucide-react';
 import { useState } from 'react';
-import { useUI } from '../context/UIContext';
-import { cn } from '../lib/utils';
+import { useUI } from '../../context/UIContext';
+import { cn } from '../../lib/utils';
+import type { WorkflowParameter as Parameter } from '../../types/workflow';
 
-interface Parameter {
-    key: string;
-    type: string;
-    desc: string;
-    isRequired: boolean;
-}
 
 export const NewEventModal = () => {
     const { closeModal, showToast } = useUI();

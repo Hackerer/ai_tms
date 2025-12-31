@@ -3,21 +3,9 @@ import { Plus, Edit, Trash2, FolderTree, ArrowLeft, ChevronRight, ChevronDown, F
 import { useNavigate } from 'react-router-dom';
 import { useUI } from '../context/UIContext';
 import { cn } from '../lib/utils';
-
-// 基于后端 Page 模型的字段定义
-interface Page {
-    id: string;
-    tenant_id: string;
-    app_id: string;
-    parent_id?: string;
-    name: string;
-    path: string;
-    module: string;
-    description: string;
-    created_at: string;
-    children?: Page[];
-    event_count?: number; // 扩展字段:该页面的事件数量
-}
+import { assetService } from '../services/assetService';
+import { FeatureIcon } from '../components/FeatureIcon';
+import type { Page } from '../types/asset';
 
 // 递归树节点组件
 const PageTreeNode = ({ page, onSelect, selectedId, level = 0 }: {
@@ -34,34 +22,36 @@ const PageTreeNode = ({ page, onSelect, selectedId, level = 0 }: {
         <div>
             <div
                 className={cn(
-                    "flex items-center gap-2 px-3 py-2 rounded-lg cursor-pointer group transition-all",
-                    isActive ? "bg-primary/20 text-primary font-bold shadow-sm" : "hover:bg-white/5 text-muted-foreground hover:text-foreground"
+                    "flex items-center gap-3 px-3 py-3 rounded-lg cursor-pointer group transition-all",
+                    isActive
+                        ? "bg-primary/10 text-primary font-bold shadow-sm ring-1 ring-primary/20"
+                        : "hover:bg-muted/5 text-muted-foreground hover:text-foreground"
                 )}
-                style={{ paddingLeft: `${level * 16 + 12}px` }}
+                style={{ paddingLeft: `${level * 20 + 12}px` }}
                 onClick={() => onSelect(page)}
             >
                 {hasChildren && (
                     <button
                         onClick={(e) => { e.stopPropagation(); setIsOpen(!isOpen); }}
-                        className="hover:bg-white/10 rounded p-0.5"
+                        className="hover:bg-muted/20 rounded p-0.5 transition-colors"
                     >
-                        {isOpen ? <ChevronDown className="w-3 h-3" /> : <ChevronRight className="w-3 h-3" />}
+                        {isOpen ? <ChevronDown className="w-3.5 h-3.5" /> : <ChevronRight className="w-3.5 h-3.5" />}
                     </button>
                 )}
                 {!hasChildren && <div className="w-4" />}
-                <FileText className={cn("w-4 h-4 shrink-0", isActive ? "text-primary" : "group-hover:text-primary")} />
-                <span className="flex-1 text-sm font-medium truncate">{page.name}</span>
+                <FileText className={cn("w-4 h-4 shrink-0 transition-colors", isActive ? "text-primary" : "group-hover:text-primary")} />
+                <span className="flex-1 text-sm font-medium truncate tracking-tight">{page.name}</span>
                 {page.event_count !== undefined && page.event_count > 0 && (
                     <span className={cn(
-                        "text-[10px] px-1.5 py-0.5 rounded-full font-mono shrink-0",
-                        isActive ? "bg-primary/30 text-primary" : "bg-white/5 text-muted-foreground"
+                        "text-[10px] px-1.5 py-0.5 rounded-full font-mono shrink-0 font-bold",
+                        isActive ? "bg-primary/20 text-primary" : "bg-muted/10 text-muted-foreground"
                     )}>
                         {page.event_count}
                     </span>
                 )}
             </div>
             {isOpen && hasChildren && (
-                <div className="space-y-1 mt-1">
+                <div className="space-y-0.5 mt-0.5 relative before:absolute before:left-[19px] before:top-0 before:bottom-0 before:w-px before:bg-border/50">
                     {page.children!.map((child) => (
                         <PageTreeNode
                             key={child.id}
@@ -91,65 +81,40 @@ export const PageManagement = () => {
     const fetchPages = async () => {
         setIsLoading(true);
         try {
-            // TODO: 替换为真实 API
-            // const response = await fetch('/api/pages');
-            // const data = await response.json();
+            const data = await assetService.getPages('APP-001');
 
-            // Mock 数据
-            const mockFlatPages = [
-                { id: 'PAGE-001', tenant_id: 'TENANT-001', app_id: 'APP-001', name: '热销看板', path: '/home/hot-sales', parent_id: null, module: '首页模块', description: '展示热销商品的看板页面', created_at: '2025-01-01 10:00:00', event_count: 6 },
-                { id: 'PAGE-002', tenant_id: 'TENANT-001', app_id: 'APP-001', name: '搜索结果页', path: '/home/search', parent_id: null, module: '首页模块', description: '商品搜索结果展示页', created_at: '2025-01-01 10:00:00', event_count: 4 },
-                { id: 'PAGE-003', tenant_id: 'TENANT-001', app_id: 'APP-001', name: '商品详情页', path: '/shop/detail', parent_id: null, module: '购物中心', description: '单个商品的详细信息页', created_at: '2025-01-05 14:20:00', event_count: 8 },
-                { id: 'PAGE-004', tenant_id: 'TENANT-001', app_id: 'APP-001', name: '购物车', path: '/shop/cart', parent_id: null, module: '购物中心', description: '用户购物车管理页面', created_at: '2025-01-05 14:20:00', event_count: 3 },
-                { id: 'PAGE-005', tenant_id: 'TENANT-001', app_id: 'APP-001', name: '订单确认', path: '/shop/checkout', parent_id: 'PAGE-004', module: '购物中心', description: '订单确认与支付页面', created_at: '2025-01-10 09:30:00', event_count: 5 },
-                { id: 'PAGE-006', tenant_id: 'TENANT-001', app_id: 'APP-001', name: '个人中心', path: '/profile', parent_id: null, module: '个人中心', description: '用户个人信息管理', created_at: '2025-01-15 16:45:00', event_count: 2 },
-            ];
+            const buildTree = (list: Page[], parentId: string | null = null): Page[] => {
+                return list
+                    .filter(item => (parentId ? item.parent_id === parentId : !item.parent_id))
+                    .map(item => ({
+                        ...item,
+                        children: buildTree(list, item.id)
+                    }));
+            };
 
-            const tree = buildTree(mockFlatPages);
+            const tree = buildTree(data);
             setPages(tree);
         } catch (error) {
             console.error('Failed to fetch pages:', error);
-            showToast('加载页面失败', 'error');
+            showToast('加载页面数据失败', 'error');
         } finally {
             setIsLoading(false);
         }
     };
 
-    const buildTree = (flatPages: any[]): Page[] => {
-        const map: Record<string, Page> = {};
-        const roots: Page[] = [];
-
-        // 第一遍: 创建所有节点
-        flatPages.forEach(page => {
-            map[page.id] = { ...page, children: [] };
-        });
-
-        // 第二遍: 建立父子关系
-        flatPages.forEach(page => {
-            const node = map[page.id];
-            if (page.parent_id && map[page.parent_id]) {
-                map[page.parent_id].children!.push(node);
-            } else {
-                roots.push(node);
-            }
-        });
-
-        return roots;
-    };
-
-    const getAllPages = (nodes: Page[]): Page[] => {
-        const result: Page[] = [];
+    const getAllPagesCount = (nodes: Page[]): number => {
+        let count = 0;
         const traverse = (n: Page) => {
-            result.push(n);
+            count++;
             if (n.children) {
                 n.children.forEach(traverse);
             }
         };
         nodes.forEach(traverse);
-        return result;
+        return count;
     };
 
-    const allPages = getAllPages(pages);
+    const totalPagesCount = getAllPagesCount(pages);
 
     return (
         <div className="flex h-full bg-background">
@@ -158,30 +123,30 @@ export const PageManagement = () => {
                 <div className="mb-6">
                     <button
                         onClick={() => navigate('/assets')}
-                        className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors mb-4"
+                        className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors mb-4 group"
                     >
-                        <ArrowLeft className="w-4 h-4" />
+                        <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
                         返回资产库
                     </button>
                     <div className="flex justify-between items-center">
                         <div>
-                            <h2 className="text-2xl font-extrabold">页面结构管理</h2>
-                            <p className="text-sm text-muted-foreground mt-1">
-                                管理应用的页面层级结构 • 共 {allPages.length} 个页面
+                            <h2 className="text-2xl font-black text-foreground tracking-tight">页面结构管理</h2>
+                            <p className="text-sm text-muted-foreground mt-1 font-medium">
+                                管理应用的页面层级结构 • 共 {totalPagesCount} 个页面
                             </p>
                         </div>
                         <div className="flex gap-3">
                             <button
                                 onClick={() => showToast('批量导入功能开发中...', 'info')}
-                                className="px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-xs font-bold hover:bg-white/10 transition-colors"
+                                className="px-4 py-2 rounded-lg bg-muted/10 border border-border text-xs font-bold hover:bg-muted/20 transition-colors text-foreground"
                             >
                                 批量导入
                             </button>
                             <button
                                 onClick={() => openModal('NEW_PAGE')}
-                                className="px-4 py-2 rounded-lg bg-primary text-white text-xs font-bold shadow-[0_0_15px_rgba(59,130,246,0.3)] hover:brightness-110 active:scale-95 transition-all"
+                                className="px-4 py-2 rounded-lg bg-primary text-primary-foreground text-xs font-bold shadow-lg hover:brightness-110 active:scale-95 transition-all flex items-center gap-2"
                             >
-                                <Plus className="w-3.5 h-3.5 inline mr-1" />
+                                <Plus className="w-3.5 h-3.5" />
                                 新建页面
                             </button>
                         </div>
@@ -190,13 +155,16 @@ export const PageManagement = () => {
 
                 {isLoading ? (
                     <div className="flex items-center justify-center h-64">
-                        <div className="text-sm text-muted-foreground">加载中...</div>
+                        <div className="w-8 h-8 border-4 border-primary/20 border-t-primary rounded-full animate-spin" />
                     </div>
                 ) : (
-                    <div className="glass-card p-6 rounded-2xl border-white/[0.05]">
-                        <div className="flex items-center gap-2 mb-4 pb-3 border-b border-white/10">
-                            <Globe className="w-4 h-4 text-primary" />
-                            <h3 className="text-sm font-bold">电商核心 App (iOS)</h3>
+                    <div className="glass-card p-6 rounded-2xl border-border shadow-sm">
+                        <div className="flex items-center gap-3 mb-6 pb-4 border-b border-border/50">
+                            <FeatureIcon icon={Globe} variant="primary" className="w-8 h-8 rounded-lg" scale={0.8} />
+                            <div>
+                                <h3 className="text-sm font-bold text-foreground">电商核心 App (iOS)</h3>
+                                <p className="text-xs text-muted-foreground">Main Application Tree</p>
+                            </div>
                         </div>
                         <div className="space-y-1">
                             {pages.map(page => (
@@ -214,64 +182,73 @@ export const PageManagement = () => {
 
             {/* 右侧详情面板 */}
             {selectedPage ? (
-                <div className="w-96 border-l border-white/10 bg-black/20 p-6 overflow-auto">
-                    <h3 className="text-lg font-bold mb-1">{selectedPage.name}</h3>
-                    <p className="text-[10px] text-muted-foreground font-mono mb-6 uppercase">{selectedPage.id}</p>
+                <div className="w-96 border-l border-border bg-background/50 p-8 overflow-auto backdrop-blur-sm shadow-xl z-10 transition-all">
+                    <div className="mb-8">
+                        <FeatureIcon icon={FileText} variant="primary" className="w-12 h-12 rounded-xl mb-4" />
+                        <h3 className="text-xl font-bold mb-1 text-foreground leading-tight">{selectedPage.name}</h3>
+                        <p className="text-xs text-muted-foreground font-mono uppercase tracking-wider">{selectedPage.id}</p>
+                    </div>
 
                     <div className="space-y-6">
-                        <div className="glass-card p-4 rounded-xl border-white/[0.05]">
-                            <h4 className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-3">基本信息</h4>
-                            <div className="space-y-3">
+                        <div className="glass-card p-5 rounded-xl border-border shadow-sm">
+                            <h4 className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-4 flex items-center gap-2">
+                                <div className="w-1 h-3 bg-primary rounded-full" />
+                                基本信息
+                            </h4>
+                            <div className="space-y-4">
                                 <div>
-                                    <label className="text-[10px] text-muted-foreground uppercase tracking-wider">页面路径</label>
-                                    <p className="text-sm font-mono mt-1 bg-white/5 px-2 py-1 rounded border border-white/10">{selectedPage.path}</p>
+                                    <label className="text-[10px] text-muted-foreground uppercase tracking-wider block mb-1.5 opacity-70">页面路径</label>
+                                    <p className="text-sm font-mono bg-muted/10 px-3 py-2 rounded-lg border border-border/50 text-foreground break-all">{selectedPage.path}</p>
                                 </div>
                                 <div>
-                                    <label className="text-[10px] text-muted-foreground uppercase tracking-wider">所属模块</label>
-                                    <p className="text-sm mt-1">{selectedPage.module}</p>
+                                    <label className="text-[10px] text-muted-foreground uppercase tracking-wider block mb-1.5 opacity-70">所属模块</label>
+                                    <p className="text-sm font-medium text-foreground">{selectedPage.module}</p>
                                 </div>
                                 <div>
-                                    <label className="text-[10px] text-muted-foreground uppercase tracking-wider">业务描述</label>
-                                    <p className="text-sm mt-1 text-muted-foreground leading-relaxed">{selectedPage.description}</p>
+                                    <label className="text-[10px] text-muted-foreground uppercase tracking-wider block mb-1.5 opacity-70">业务描述</label>
+                                    <p className="text-sm text-muted-foreground leading-relaxed">{selectedPage.description}</p>
                                 </div>
                                 {selectedPage.parent_id && (
                                     <div>
-                                        <label className="text-[10px] text-muted-foreground uppercase tracking-wider">父页面</label>
-                                        <p className="text-sm mt-1 font-mono text-primary">{selectedPage.parent_id}</p>
+                                        <label className="text-[10px] text-muted-foreground uppercase tracking-wider block mb-1.5 opacity-70">父页面</label>
+                                        <p className="text-sm font-mono text-primary bg-primary/5 px-2 py-1 rounded w-fit">{selectedPage.parent_id}</p>
                                     </div>
                                 )}
                             </div>
                         </div>
 
-                        <div className="glass-card p-4 rounded-xl border-white/[0.05]">
-                            <h4 className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-3">统计信息</h4>
+                        <div className="glass-card p-5 rounded-xl border-border shadow-sm">
+                            <h4 className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-4 flex items-center gap-2">
+                                <div className="w-1 h-3 bg-green-500 rounded-full" />
+                                统计数据
+                            </h4>
                             <div className="space-y-3">
-                                <div className="flex justify-between items-center">
+                                <div className="flex justify-between items-center p-2 rounded hover:bg-muted/5 transition-colors">
                                     <span className="text-sm text-muted-foreground">埋点事件数量</span>
                                     <span className="text-lg font-bold text-primary">{selectedPage.event_count || 0}</span>
                                 </div>
-                                <div className="flex justify-between items-center">
+                                <div className="flex justify-between items-center p-2 rounded hover:bg-muted/5 transition-colors">
                                     <span className="text-sm text-muted-foreground">子页面数量</span>
-                                    <span className="text-lg font-bold">{selectedPage.children?.length || 0}</span>
+                                    <span className="text-lg font-bold text-foreground">{selectedPage.children?.length || 0}</span>
                                 </div>
-                                <div className="flex justify-between items-center">
+                                <div className="flex justify-between items-center p-2 rounded hover:bg-muted/5 transition-colors">
                                     <span className="text-sm text-muted-foreground">创建时间</span>
-                                    <span className="text-xs font-mono text-muted-foreground">{selectedPage.created_at.split(' ')[0]}</span>
+                                    <span className="text-xs font-mono text-muted-foreground">{selectedPage.created_at?.split(' ')[0]}</span>
                                 </div>
                             </div>
                         </div>
 
-                        <div className="flex flex-col gap-2">
+                        <div className="flex flex-col gap-3 pt-4">
                             <button
                                 onClick={() => showToast('编辑功能开发中...', 'info')}
-                                className="w-full flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-xs font-bold hover:bg-white/10 transition-colors"
+                                className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-muted/10 border border-border text-xs font-bold hover:bg-muted/20 transition-colors text-foreground"
                             >
                                 <Edit className="w-3.5 h-3.5" />
-                                编辑页面
+                                编辑页面信息
                             </button>
                             <button
                                 onClick={() => showToast('删除功能开发中...', 'info')}
-                                className="w-full flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-xs font-bold hover:bg-red-500/20 transition-colors"
+                                className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-red-500/5 border border-red-500/10 text-red-600 text-xs font-bold hover:bg-red-500/10 transition-colors"
                             >
                                 <Trash2 className="w-3.5 h-3.5" />
                                 删除页面
@@ -280,10 +257,13 @@ export const PageManagement = () => {
                     </div>
                 </div>
             ) : (
-                <div className="w-96 border-l border-white/10 bg-black/20 p-6 flex items-center justify-center">
+                <div className="w-96 border-l border-border bg-background/50 p-6 flex items-center justify-center backdrop-blur-sm">
                     <div className="text-center">
-                        <FolderTree className="w-12 h-12 mx-auto mb-3 text-muted-foreground opacity-50" />
-                        <p className="text-sm text-muted-foreground">请从左侧选择一个页面</p>
+                        <FeatureIcon icon={FolderTree} className="w-20 h-20 mx-auto mb-6 opacity-80" variant="primary" scale={1.2} />
+                        <h3 className="text-lg font-bold text-foreground">No Selection</h3>
+                        <p className="text-sm text-muted-foreground mt-2 max-w-[200px] mx-auto">
+                            请从左侧页面树中选择一个节点以查看详细配置。
+                        </p>
                     </div>
                 </div>
             )}

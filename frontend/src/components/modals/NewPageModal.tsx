@@ -1,7 +1,7 @@
 import { CheckCircle2, Layout, Link as LinkIcon } from 'lucide-react';
 import { useState } from 'react';
-import { useUI } from '../context/UIContext';
-import { cn } from '../lib/utils';
+import { useUI } from '../../context/UIContext';
+import { cn } from '../../lib/utils';
 
 export const NewPageModal = () => {
     const { closeModal, showToast } = useUI();

@@ -8,6 +8,7 @@ import { Workbench } from './pages/Workbench';
 import { EventDetail } from './pages/EventDetail';
 import { ParameterPool } from './pages/ParameterPool';
 import { PageManagement } from './pages/PageManagement';
+import { ThemeProvider } from './context/ThemeContext';
 import { UIProvider } from './context/UIContext';
 import { TreeProvider } from './context/TreeContext';
 import { Modal } from './components/Modal';
@@ -24,32 +25,34 @@ const PlaceholderPage = ({ title }: { title: string }) => (
 
 function App() {
   return (
-    <UIProvider>
-      <TreeProvider>
-        <Router>
-          <div className="flex h-screen bg-[#050505] text-foreground font-sans selection:bg-primary/30">
-            <Sidebar />
-            <main className="flex-1 relative flex flex-col min-w-0 overflow-hidden">
-              <Routes>
-                <Route path="/" element={<Navigate to="/dashboard" replace />} />
-                <Route path="/dashboard" element={<Dashboard />} />
-                <Route path="/assets" element={<AssetLibrary />} />
-                <Route path="/assets/event/:id" element={<EventDetail />} />
-                <Route path="/assets/parameters" element={<ParameterPool />} />
-                <Route path="/assets/pages" element={<PageManagement />} />
-                <Route path="/workflows" element={<Workflows />} />
-                <Route path="/workbench/:id" element={<Workbench />} />
-                <Route path="/team" element={<Team />} />
-                <Route path="/notifications" element={<PlaceholderPage title="通知中心" />} />
-                <Route path="/settings" element={<PlaceholderPage title="系统设置" />} />
-              </Routes>
-            </main>
-            <Modal />
-            <Toast />
-          </div>
-        </Router>
-      </TreeProvider>
-    </UIProvider>
+    <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+      <UIProvider>
+        <TreeProvider>
+          <Router>
+            <div className="flex h-screen bg-background text-foreground font-sans selection:bg-primary/30">
+              <Sidebar />
+              <main className="flex-1 relative flex flex-col min-w-0 overflow-hidden">
+                <Routes>
+                  <Route path="/" element={<Navigate to="/dashboard" replace />} />
+                  <Route path="/dashboard" element={<Dashboard />} />
+                  <Route path="/assets" element={<AssetLibrary />} />
+                  <Route path="/assets/event/:id" element={<EventDetail />} />
+                  <Route path="/assets/parameters" element={<ParameterPool />} />
+                  <Route path="/assets/pages" element={<PageManagement />} />
+                  <Route path="/workflows" element={<Workflows />} />
+                  <Route path="/workbench/:id" element={<Workbench />} />
+                  <Route path="/team" element={<Team />} />
+                  <Route path="/notifications" element={<PlaceholderPage title="通知中心" />} />
+                  <Route path="/settings" element={<PlaceholderPage title="系统设置" />} />
+                </Routes>
+              </main>
+              <Modal />
+              <Toast />
+            </div>
+          </Router>
+        </TreeProvider>
+      </UIProvider>
+    </ThemeProvider>
   );
 }
 

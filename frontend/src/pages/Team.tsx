@@ -17,12 +17,12 @@ const UserRow = ({ name, email, role, status }: any) => {
     const { openModal } = useUI();
     return (
         <tr
-            className="border-b border-white/5 hover:bg-white/[0.02] transition-colors group cursor-pointer"
+            className="border-b border-border hover:bg-muted/5 transition-colors group cursor-pointer"
             onClick={() => openModal('USER_JOURNEY_DEMO')}
         >
             <td className="px-6 py-4">
                 <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500/20 to-indigo-500/20 border border-white/10 flex items-center justify-center text-xs font-bold text-primary">
+                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500/20 to-indigo-500/20 border border-border flex items-center justify-center text-xs font-bold text-primary">
                         {name.charAt(0)}
                     </div>
                     <div className="flex flex-col">
@@ -48,7 +48,7 @@ const UserRow = ({ name, email, role, status }: any) => {
             </td>
             <td className="px-6 py-4 text-right">
                 <button
-                    className="p-1 hover:bg-white/10 rounded-md transition-colors text-muted-foreground group-hover:text-white"
+                    className="p-1 hover:bg-muted/10 rounded-md transition-colors text-muted-foreground group-hover:text-foreground"
                     onClick={(e) => { e.stopPropagation(); }}
                 >
                     <MoreHorizontal className="w-4 h-4" />
@@ -62,7 +62,7 @@ const GroupCard = ({ name, description, memberCount, appCount }: any) => {
     const { openModal } = useUI();
     return (
         <div
-            className="glass-card p-6 rounded-2xl border-white/[0.05] hover:border-primary/30 transition-all hover:translate-y-[-2px] group cursor-pointer relative overflow-hidden"
+            className="glass-card p-6 rounded-2xl border-border hover:border-primary/30 transition-all hover:translate-y-[-2px] group cursor-pointer relative overflow-hidden"
             onClick={() => openModal('USER_JOURNEY_DEMO')}
         >
             <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
@@ -73,7 +73,7 @@ const GroupCard = ({ name, description, memberCount, appCount }: any) => {
                     <Building2 className="w-6 h-6" />
                 </div>
                 <button
-                    className="p-1 hover:bg-white/10 rounded-md text-muted-foreground"
+                    className="p-1 hover:bg-muted/10 rounded-md text-muted-foreground"
                     onClick={(e) => { e.stopPropagation(); }}
                 >
                     <Settings className="w-4 h-4" />
@@ -81,7 +81,7 @@ const GroupCard = ({ name, description, memberCount, appCount }: any) => {
             </div>
             <h4 className="text-lg font-bold mb-2 group-hover:text-primary transition-colors">{name}</h4>
             <p className="text-sm text-muted-foreground line-clamp-2 mb-6">{description}</p>
-            <div className="flex items-center justify-between pt-4 border-t border-white/5">
+            <div className="flex items-center justify-between pt-4 border-t border-border">
                 <div className="flex items-center gap-4">
                     <div className="flex flex-col">
                         <span className="text-xs font-bold">{memberCount}</span>
@@ -109,7 +109,7 @@ export const Team = () => {
     return (
         <div className="flex-1 flex flex-col overflow-hidden bg-background animate-in fade-in duration-700">
             {/* Header */}
-            <div className="h-16 border-b border-white/10 flex items-center justify-between px-8 bg-black/20 backdrop-blur-md sticky top-0 z-10">
+            <div className="h-16 border-b border-border flex items-center justify-between px-8 bg-background/80 backdrop-blur-md sticky top-0 z-10">
                 <div className="flex items-center gap-3">
                     <div className="w-8 h-8 rounded-lg bg-orange-500/20 flex items-center justify-center text-orange-400 border border-orange-500/20">
                         <Users className="w-4 h-4" />
@@ -117,12 +117,12 @@ export const Team = () => {
                     <h2 className="text-xl font-bold tracking-tight">团队与协作管理</h2>
                 </div>
                 <div className="flex items-center gap-4">
-                    <div className="flex rounded-lg bg-white/5 p-1 border border-white/10 shadow-inner">
+                    <div className="flex rounded-lg bg-muted/10 p-1 border border-border shadow-inner">
                         <button
                             onClick={() => { setActiveTab('groups'); showToast('已切换至协作组管理', 'info'); }}
                             className={cn(
                                 "px-4 py-1.5 rounded-md text-xs font-semibold transition-all",
-                                activeTab === 'groups' ? "bg-white/10 text-white shadow-sm" : "text-muted-foreground hover:text-foreground"
+                                activeTab === 'groups' ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"
                             )}
                         >
                             协作组 (Groups)
@@ -131,7 +131,7 @@ export const Team = () => {
                             onClick={() => { setActiveTab('members'); showToast('已切换至全员名单', 'info'); }}
                             className={cn(
                                 "px-4 py-1.5 rounded-md text-xs font-semibold transition-all",
-                                activeTab === 'members' ? "bg-white/10 text-white shadow-sm" : "text-muted-foreground hover:text-foreground"
+                                activeTab === 'members' ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"
                             )}
                         >
                             全员名单
@@ -177,10 +177,10 @@ export const Team = () => {
                                 appCount={5}
                             />
                             <div
-                                className="border-2 border-dashed border-white/5 rounded-2xl flex flex-col items-center justify-center p-8 text-muted-foreground hover:border-white/10 transition-colors cursor-pointer group"
+                                className="border-2 border-dashed border-border rounded-2xl flex flex-col items-center justify-center p-8 text-muted-foreground hover:border-foreground/10 transition-colors cursor-pointer group"
                                 onClick={() => showToast('创建向导正在加载...', 'info')}
                             >
-                                <div className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+                                <div className="w-10 h-10 rounded-full bg-muted/10 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
                                     <Plus className="w-5 h-5" />
                                 </div>
                                 <p className="text-sm font-medium">创建新的协作组</p>
@@ -188,23 +188,23 @@ export const Team = () => {
                         </div>
                     ) : (
                         <div className="glass-card rounded-2xl overflow-hidden animate-in fade-in slide-in-from-bottom-2 duration-500">
-                            <div className="px-6 py-4 border-b border-white/10 flex items-center justify-between">
+                            <div className="px-6 py-4 border-b border-border flex items-center justify-between">
                                 <div className="flex items-center gap-2">
                                     <UserCheck className="w-4 h-4 text-primary" />
                                     <h4 className="font-semibold text-sm">成员列表 (24)</h4>
                                 </div>
-                                <div className="flex items-center gap-2 text-[10px] text-muted-foreground px-2 py-0.5 rounded bg-white/5 border border-white/10">仅展示当前租户</div>
+                                <div className="flex items-center gap-2 text-[10px] text-muted-foreground px-2 py-0.5 rounded bg-muted/10 border border-border">仅展示当前租户</div>
                             </div>
                             <table className="w-full text-left">
                                 <thead>
-                                    <tr className="bg-white/5 border-b border-white/10">
+                                    <tr className="bg-muted/30 border-b border-border">
                                         <th className="px-6 py-3 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">成员</th>
                                         <th className="px-6 py-3 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">角色权限</th>
                                         <th className="px-6 py-3 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">状态</th>
                                         <th className="px-6 py-3"></th>
                                     </tr>
                                 </thead>
-                                <tbody className="divide-y divide-white/5 text-shadow-sm">
+                                <tbody className="divide-y divide-border text-shadow-sm">
                                     <UserRow name="Alex Chen" email="alex.c@nexus.com" role="Admin" status="Active" />
                                     <UserRow name="Sarah Zhao" email="sarah.z@nexus.com" role="Editor" status="Active" />
                                     <UserRow name="Mike Sun" email="mike.s@nexus.com" role="Editor" status="Offline" />
@@ -213,7 +213,7 @@ export const Team = () => {
                                     <UserRow name="Emily Wang" email="emily.w@nexus.com" role="Editor" status="Active" />
                                 </tbody>
                             </table>
-                            <div className="px-6 py-3 bg-white/[0.02] border-t border-white/5 text-center">
+                            <div className="px-6 py-3 bg-muted/5 border-t border-border text-center">
                                 <button className="text-xs text-primary hover:underline font-medium" onClick={() => showToast('正在加载全量名单...', 'info')}>查看更多成员...</button>
                             </div>
                         </div>

@@ -30,21 +30,21 @@ const BasicInfoTab = ({ params, paramSearch, setParamSearch }: any) => {
     return (
         <div className="space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-500">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="glass-card p-6 rounded-2xl border-white/[0.05]">
+                <div className="glass-card p-6 rounded-2xl border-border">
                     <h4 className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-4 flex items-center gap-2">
                         <Info className="w-3.5 h-3.5 text-primary" />
                         核心元数据
                     </h4>
                     <div className="space-y-4">
-                        <div className="flex justify-between items-center py-2 border-b border-white/5">
+                        <div className="flex justify-between items-center py-2 border-b border-border">
                             <span className="text-sm text-muted-foreground">事件类型</span>
                             <span className="text-sm font-medium">点击事件 (Click)</span>
                         </div>
-                        <div className="flex justify-between items-center py-2 border-b border-white/5">
+                        <div className="flex justify-between items-center py-2 border-b border-border">
                             <span className="text-sm text-muted-foreground">所属业务域</span>
                             <span className="text-sm font-medium text-primary">交易链路 / 购物车</span>
                         </div>
-                        <div className="flex justify-between items-center py-2 border-b border-white/5">
+                        <div className="flex justify-between items-center py-2 border-b border-border">
                             <span className="text-sm text-muted-foreground">负责人 (Owner)</span>
                             <div className="flex items-center gap-2">
                                 <div className="w-5 h-5 rounded-full bg-primary/20 flex items-center justify-center text-[10px] font-bold text-primary border border-primary/20">A</div>
@@ -54,14 +54,14 @@ const BasicInfoTab = ({ params, paramSearch, setParamSearch }: any) => {
                         <div className="flex justify-between items-center py-2">
                             <span className="text-sm text-muted-foreground">应用范围</span>
                             <div className="flex gap-2">
-                                <span className="text-[10px] px-2 py-0.5 rounded bg-white/5 border border-white/10">iOS</span>
-                                <span className="text-[10px] px-2 py-0.5 rounded bg-white/5 border border-white/10">Android</span>
+                                <span className="text-[10px] px-2 py-0.5 rounded bg-muted/10 border border-border">iOS</span>
+                                <span className="text-[10px] px-2 py-0.5 rounded bg-muted/10 border border-border">Android</span>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div className="glass-card p-6 rounded-2xl border-white/[0.05]">
+                <div className="glass-card p-6 rounded-2xl border-border">
                     <h4 className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-4 flex items-center gap-2">
                         <DatabaseZap className="w-3.5 h-3.5 text-primary" />
                         上报约束
@@ -83,8 +83,8 @@ const BasicInfoTab = ({ params, paramSearch, setParamSearch }: any) => {
                 </div>
             </div>
 
-            <div className="glass-card rounded-2xl border-white/[0.05] overflow-hidden">
-                <div className="px-6 py-4 border-b border-white/10 bg-white/[0.02] flex justify-between items-center">
+            <div className="glass-card rounded-2xl border-border overflow-hidden">
+                <div className="px-6 py-4 border-b border-border bg-white/[0.02] flex justify-between items-center">
                     <h4 className="text-xs font-bold text-muted-foreground uppercase tracking-widest flex items-center gap-2">
                         <Layers className="w-3.5 h-3.5 text-primary" />
                         参数 Schema ({filteredParams.length})
@@ -96,22 +96,22 @@ const BasicInfoTab = ({ params, paramSearch, setParamSearch }: any) => {
                             placeholder="搜索参数..."
                             value={paramSearch}
                             onChange={(e) => setParamSearch(e.target.value)}
-                            className="bg-white/5 border border-white/10 rounded-lg pl-8 pr-3 py-1 text-[10px] focus:outline-none focus:ring-1 focus:ring-primary/50 w-40 transition-all"
+                            className="bg-muted/10 border border-border rounded-lg pl-8 pr-3 py-1 text-[10px] focus:outline-none focus:ring-1 focus:ring-primary/50 w-40 transition-all text-foreground"
                         />
                     </div>
                 </div>
                 <table className="w-full text-left">
                     <thead>
-                        <tr className="bg-white/[0.01] border-b border-white/5">
+                        <tr className="bg-white/[0.01] border-b border-border">
                             <th className="px-6 py-3 text-[10px] font-bold uppercase text-muted-foreground">参数键名 (Key)</th>
                             <th className="px-6 py-3 text-[10px] font-bold uppercase text-muted-foreground">类型</th>
                             <th className="px-6 py-3 text-[10px] font-bold uppercase text-muted-foreground">业务说明</th>
                             <th className="px-6 py-3 text-[10px] font-bold uppercase text-muted-foreground text-center">示例值</th>
                         </tr>
                     </thead>
-                    <tbody className="divide-y divide-white/5 font-mono text-xs">
+                    <tbody className="divide-y divide-border/20 font-mono text-xs">
                         {filteredParams.map((p: any, i: number) => (
-                            <tr key={i} className="hover:bg-white/[0.01]">
+                            <tr key={i} className="hover:bg-muted/5">
                                 <td className="px-6 py-3 font-semibold text-foreground">{p.key}</td>
                                 <td className="px-6 py-3">
                                     <span className={cn(
@@ -147,19 +147,19 @@ const ChangeLogsTab = () => (
             { ver: 'v1.0', date: '2025-10-01', req: 'REQ-88', type: 'NEW', desc: '事件初稿创建，由交易链路组提交。', user: 'Mike Sun' },
         ].map((log, i) => (
             <div key={i} className="relative pl-8 group">
-                {i !== 2 && <div className="absolute left-[11px] top-6 w-[2px] h-[calc(100%+24px)] bg-white/5" />}
+                {i !== 2 && <div className="absolute left-[11px] top-6 w-[2px] h-[calc(100%+24px)] bg-border" />}
                 <div className={cn(
                     "absolute left-0 top-1 w-6 h-6 rounded-full border-4 border-background flex items-center justify-center z-10 shadow-sm",
                     log.type === 'NEW' ? "bg-green-500" : "bg-primary"
                 )}>
                     {log.type === 'NEW' ? <Plus className="w-3 h-3 text-white" /> : <Clock className="w-3 h-3 text-white" />}
                 </div>
-                <div className="glass-card p-5 rounded-2xl border-white/[0.05] hover:border-primary/20 transition-all">
+                <div className="glass-card p-5 rounded-2xl border-border hover:border-primary/20 transition-all">
                     <div className="flex justify-between items-start mb-2">
                         <div className="flex items-center gap-3">
                             <span className="text-sm font-bold tracking-tight">{log.ver}</span>
                             <span className="text-[10px] text-muted-foreground font-mono">{log.date}</span>
-                            <div className="px-2 py-0.5 rounded bg-white/5 border border-white/10 text-[9px] text-primary font-bold">关联需求: {log.req}</div>
+                            <div className="px-2 py-0.5 rounded bg-muted/10 border border-border text-[9px] text-primary font-bold">关联需求: {log.req}</div>
                         </div>
                         <div className="flex items-center gap-2 text-[10px] text-muted-foreground">
                             <User className="w-3 h-3" />
@@ -190,21 +190,21 @@ LIMIT 100;`;
 
     return (
         <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-500">
-            <div className="glass-card rounded-2xl overflow-hidden border-white/[0.05]">
-                <div className="px-6 py-4 border-b border-white/10 bg-white/[0.02] flex justify-between items-center">
+            <div className="glass-card rounded-2xl overflow-hidden border-border">
+                <div className="px-6 py-4 border-b border-border bg-white/[0.02] flex justify-between items-center">
                     <div className="flex items-center gap-2">
                         <Database className="w-4 h-4 text-primary" />
                         <h4 className="text-sm font-bold">数仓分析模板 (SQL)</h4>
                     </div>
                     <button
                         onClick={() => { navigator.clipboard.writeText(sql); showToast('SQL 模板已复制', 'success'); }}
-                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg hover:bg-white/10 transition-colors text-xs text-muted-foreground"
+                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg hover:bg-muted/10 transition-colors text-xs text-muted-foreground"
                     >
                         <Copy className="w-3.5 h-3.5" />
                         复制模板
                     </button>
                 </div>
-                <div className="p-6 bg-black/40 font-mono text-sm leading-relaxed text-blue-300">
+                <div className="p-6 bg-muted/20 font-mono text-sm leading-relaxed text-blue-400">
                     <pre className="overflow-x-auto whitespace-pre-wrap">{sql}</pre>
                 </div>
             </div>
@@ -254,7 +254,7 @@ Nexus.track("cart_add_click", mapOf(
                             "px-4 py-1.5 rounded-lg text-[11px] font-bold transition-all border",
                             platform === p
                                 ? "bg-primary text-white border-primary shadow-[0_0_15px_rgba(59,130,246,0.5)]"
-                                : "bg-white/5 border-white/5 text-muted-foreground hover:bg-white/10"
+                                : "bg-muted/10 border-border text-muted-foreground hover:bg-muted/20"
                         )}
                     >
                         {p === 'js' ? 'JavaScripts' : p === 'swift' ? 'iOS (Swift)' : 'Android (Kotlin)'}
@@ -262,20 +262,20 @@ Nexus.track("cart_add_click", mapOf(
                 ))}
             </div>
 
-            <div className="glass-card rounded-2xl overflow-hidden border-white/[0.05]">
-                <div className="px-6 py-4 border-b border-white/10 bg-white/[0.02] flex justify-between items-center">
+            <div className="glass-card rounded-2xl overflow-hidden border-border">
+                <div className="px-6 py-4 border-b border-border bg-white/[0.02] flex justify-between items-center">
                     <div className="flex items-center gap-2">
                         <Code className="w-4 h-4 text-primary" />
                         <h4 className="text-sm font-bold">SDK 调用方法</h4>
                     </div>
                     <button
                         onClick={() => { navigator.clipboard.writeText(codes[platform]); showToast('代码已复制到剪贴板', 'success'); }}
-                        className="p-1.5 hover:bg-white/10 rounded-lg text-muted-foreground"
+                        className="p-1.5 hover:bg-muted/10 rounded-lg text-muted-foreground"
                     >
                         <Copy className="w-4 h-4" />
                     </button>
                 </div>
-                <div className="p-6 bg-black/40 font-mono text-xs leading-relaxed text-purple-300">
+                <div className="p-6 bg-muted/20 font-mono text-xs leading-relaxed text-purple-400">
                     <pre className="overflow-x-auto whitespace-pre-wrap">{codes[platform]}</pre>
                 </div>
             </div>
@@ -308,11 +308,11 @@ export const EventDetail = () => {
     return (
         <div className="flex-1 flex flex-col overflow-hidden bg-background">
             {/* Header */}
-            <div className="h-20 border-b border-white/10 flex items-center justify-between px-8 bg-black/20 backdrop-blur-md z-10">
+            <div className="h-20 border-b border-border flex items-center justify-between px-8 bg-background/80 backdrop-blur-md z-10 sticky top-0">
                 <div className="flex items-center gap-6">
                     <button
                         onClick={() => navigate('/assets')}
-                        className="p-2.5 hover:bg-white/5 rounded-full text-muted-foreground hover:text-foreground transition-all active:scale-95"
+                        className="p-2.5 hover:bg-muted/10 rounded-full text-muted-foreground hover:text-foreground transition-all active:scale-95"
                     >
                         <ArrowLeft className="w-5 h-5" />
                     </button>
@@ -331,7 +331,7 @@ export const EventDetail = () => {
                 </div>
 
                 <div className="flex items-center gap-3">
-                    <button className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-xs font-bold hover:bg-white/10 transition-colors">
+                    <button className="flex items-center gap-2 px-4 py-2 rounded-xl bg-muted/10 border border-border text-xs font-bold hover:bg-muted/20 transition-colors">
                         历史快照
                     </button>
                     <button className="flex items-center gap-2 px-6 py-2 rounded-xl bg-primary text-white text-xs font-extrabold shadow-[0_0_25px_rgba(59,130,246,0.4)] hover:brightness-110 active:scale-95 transition-all">
@@ -342,7 +342,7 @@ export const EventDetail = () => {
             </div>
 
             {/* Tabs Switcher */}
-            <div className="px-8 bg-black/10 border-b border-white/5 flex items-center h-14">
+            <div className="px-8 bg-background/50 border-b border-border flex items-center h-14 backdrop-blur-sm sticky top-20 z-10">
                 <div className="flex h-full gap-10">
                     {tabs.map((tab) => {
                         const Icon = tab.icon;
