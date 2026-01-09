@@ -1,4 +1,4 @@
-export type WorkflowStatus = 'Draft' | 'Reviewing' | 'Approved' | 'Rejected' | 'Applied';
+export type WorkflowStatus = 'DRAFT' | 'REVIEWING' | 'APPROVED' | 'REJECTED' | 'APPLIED';
 export type OperationType = 'create' | 'edit' | 'delete';
 
 export interface WorkflowParameter {
@@ -19,6 +19,7 @@ export interface EventChange {
     event_type?: string;
     parameters: WorkflowParameter[];
     isExpanded: boolean;
+    screenshot_url?: string; // 埋点截图URL
 }
 
 export interface TrackingRequest {
@@ -36,7 +37,7 @@ export interface ApprovalTask {
     id: string;
     node_name: string;
     approver_user_id: string;
-    status: 'Pending' | 'Approved' | 'Rejected';
+    status: 'PENDING' | 'APPROVED' | 'REJECTED';
     comment?: string;
     created_at: string;
 }

@@ -2,7 +2,7 @@ import unittest
 import os
 import sqlite3
 from database.db_manager import DatabaseManager
-from ai_tms.domain.asset.models import Event, EventType, Property, EnumOption, Page, App
+from ai_tms.domain.asset.models import Event, EventType, Parameter, EnumOption, Page, App
 from ai_tms.infrastructure.persistence.asset_repo import SqliteAssetRepository, SqlitePageRepository
 
 class TestAssetInfrastructure(unittest.TestCase):
@@ -34,7 +34,7 @@ class TestAssetInfrastructure(unittest.TestCase):
     def test_event_aggregate_persistence(self):
         """验证 Event 聚合根（包含 Property 级联）"""
         # 1. 构造复杂 Event
-        prop = Property("PRP_1", "T1", "Status", "string", "Basic", description="Test Prop")
+        prop = Parameter("PRP_1", "T1", "Status", "string", "Basic", description="Test Prop")
         prop.enum_options = [EnumOption("1", "Active", "Descr")]
         
         event = Event("E1", "T1", "G1", "test_evt", page_id="P1", event_type=EventType.CLK)
@@ -61,7 +61,7 @@ class TestAssetInfrastructure(unittest.TestCase):
         self.asset_repo.lock_event(event) # 只更新状态
         
         loaded = self.asset_repo.get_event_by_id("E2")
-        self.assertEqual(loaded.status, "Editing")
+        self.assertEqual(loaded.status, "EDITING")
         self.assertEqual(loaded.locked_by_request, "REQ_999")
 
     def test_list_queries(self):

@@ -11,7 +11,11 @@ export default {
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
         background: "hsl(var(--background))",
-        foreground: "hsl(var(--foreground))",
+        foreground: {
+          DEFAULT: "hsl(var(--foreground))",
+          secondary: "hsl(var(--foreground-secondary))",
+          tertiary: "hsl(var(--foreground-tertiary))",
+        },
         primary: {
           DEFAULT: "hsl(var(--primary))",
           foreground: "hsl(var(--primary-foreground))",
@@ -37,9 +41,16 @@ export default {
           foreground: "hsl(var(--popover-foreground))",
         },
         card: {
-          DEFAULT: "hsl(var(--card))",
-          foreground: "hsl(var(--card-foreground))",
+          DEFAULT: "hsl(var(--surface-container-lowest))",
+          foreground: "hsl(var(--foreground))",
         },
+        // V3 Model Tokens
+        "surface-dim": "hsl(var(--surface-dim))",
+        "surface": "hsl(var(--surface))",
+        "surface-container-lowest": "hsl(var(--surface-container-lowest))",
+        "surface-container-low": "hsl(var(--surface-container-low))",
+        "surface-container": "hsl(var(--surface-container))",
+        "surface-container-high": "hsl(var(--surface-container-high))",
       },
       borderRadius: {
         lg: "var(--radius)",

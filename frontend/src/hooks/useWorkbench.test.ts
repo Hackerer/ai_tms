@@ -32,7 +32,7 @@ describe('useWorkbench', () => {
             });
 
             expect(result.current.request.id).toBe('REQ-001');
-            expect(result.current.request.status).toBe('Draft');
+            expect(result.current.request.status).toBe('DRAFT');
             expect(result.current.request.event_references.length).toBeGreaterThan(0);
         });
 

@@ -2,7 +2,7 @@ import unittest
 import os
 import sqlite3
 from database.db_manager import DatabaseManager
-from ai_tms.domain.workflow.models import TrackingRequest, HistoryLog, EventRef
+from ai_tms.domain.workflow.models import TrackingRequest, HistoryLog, EventChange
 from ai_tms.infrastructure.persistence.workflow_repo import SqliteWorkflowRepository
 
 class TestWorkflowInfrastructure(unittest.TestCase):

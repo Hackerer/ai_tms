@@ -5,8 +5,8 @@ def get_now_str():
     return datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 from database.db_manager import DatabaseManager
 from ai_tms.domain.governance.models import User, Tenant, TrackingGroup, GroupRole, Role, PermissionPolicy, GroupMember
-from ai_tms.domain.asset.models import App, Page, Domain, Event, Property, EventType, EnumOption
-from ai_tms.domain.workflow.models import TrackingRequest, ApprovalNode, EventVersion, EventRef
+from ai_tms.domain.asset.models import App, Page, Domain, Event, Parameter, EventType, EnumOption
+from ai_tms.domain.workflow.models import TrackingRequest, ApprovalNode, EventVersion, EventChange
 # Repositories
 from ai_tms.infrastructure.persistence.governance_repo import SqliteGovernanceRepository
 from ai_tms.infrastructure.persistence.asset_repo import SqliteAssetRepository, SqlitePageRepository
@@ -112,7 +112,7 @@ class TrackingAppService:
     def get_pages_by_app(self, app_id: str, tenant_id: str) -> List[Page]:
         return self.page_repo.get_pages_by_app(app_id, tenant_id)
     
-    def get_properties_by_event(self, event_id: str, tenant_id: str) -> List[Property]:
+    def get_properties_by_event(self, event_id: str, tenant_id: str) -> List[Parameter]:
         event = self.asset_repo.get_event_by_id(event_id)
         return event.properties if event else []
 
@@ -131,6 +131,10 @@ class TrackingAppService:
     def get_requests_by_group(self, group_id: str) -> List[TrackingRequest]:
         """获取协作组下的需求单"""
         return self.flow_repo.get_requests_by_group(group_id)
+
+    def get_all_requests(self) -> List[TrackingRequest]:
+        """获取全量需求单"""
+        return self.flow_repo.get_all_requests()
 
     def create_approval_task(self, request_id: str, node_name: str, approver_id: str) -> str:
         task_id = self.flow_repo.next_identity("TSK")
@@ -228,9 +232,9 @@ class TrackingAppService:
                 for p_data in data.get('properties', []):
                     # Check existence logic is inside AssetRepo.save_event really? 
                     # No, Repo handles persistence. We build Objects here.
-                    # Mapping legacy dict to Property Object
+                    # Mapping legacy dict to Parameter Object
                     enums = [EnumOption(e['value'], e['label'], e.get('description', '')) for e in p_data.get('enum_options', [])]
-                    # Note: We need to handle Property ID generation if it's new
+                    # Note: We need to handle Parameter ID generation if it's new
                     # The old logic looked up by name. We should probably do that via repo helper inside AppService?
                     # Or just construct with a new ID and let Repo deduplicate? 
                     # AssetRepo.save_event logic: if ID exists, update? No, it looks up by ID.
@@ -239,7 +243,7 @@ class TrackingAppService:
                     found_prop = self.asset_repo.find_property_by_name(tenant_id, p_data['name'])
                     p_id = found_prop.id if found_prop else self.asset_repo.next_identity("PRP")
                     
-                    prop = Property(p_id, tenant_id, p_data['name'], p_data['data_type'], p_data['category'], 
+                    prop = Parameter(p_id, tenant_id, p_data['name'], p_data['data_type'], p_data['category'], 
                                     p_data.get('description'), p_data.get('is_required'), enums)
                     props.append(prop)
                 

@@ -6,136 +6,179 @@
 
 @layer base {
   :root {
-    /* === 色彩系统 === */
-    /* Shared Colors (Palette) */
-    --blue-500: 217 91% 60%;
-    --blue-600: 221 83% 53%;
-    --slate-900: 222 47% 11%;
-    --slate-500: 215 16% 47%;
-    --slate-200: 214 32% 91%;
-    --white: 0 0% 100%;
+    /* === V3 Foundation (Godly + Material Design 3) === */
 
-    /* Default (Dark Mode) Variables */
-    --background: 0 0% 2%;
-    --surface: 0 0% 5%;
-    --surface-elevated: 0 0% 8%;
-    /* MD3 Surface Tones (Dark) */
-    --surface-container-lowest: 0 0% 4%;
-    --surface-container-low: 0 0% 6%;
-    --surface-container: 0 0% 8%;
-    --surface-container-high: 0 0% 10%;
-    --surface-container-highest: 0 0% 13%;
+    /* MD3 Reference Palette */
+    --ref-primary: 221 83% 53%;
+    /* Blue 600 */
+    --ref-neutral-0: 0 0% 100%;
+    /* Pure White */
+    --ref-neutral-10: 210 20% 98%;
+    /* Gray 50 (Surface Dim) */
+    --ref-neutral-20: 220 14% 96%;
+    /* Gray 100 */
+    --ref-neutral-30: 220 13% 91%;
+    /* Gray 200 */
+    --ref-neutral-90: 215 16% 47%;
+    /* Slate 500 */
+    --ref-neutral-100: 222 47% 11%;
+    /* Slate 900 */
 
+    /* Typography Scale (Inter + JetBrains Mono) */
+    --font-display: 'Inter', system-ui, sans-serif;
+    --font-content: 'Inter', system-ui, sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+
+    /* Animation Tokens */
+    --duration-short: 150ms;
+    --duration-medium: 250ms;
+    --duration-long: 400ms;
+    --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+    --ease-emphasized: cubic-bezier(0.2, 0, 0, 1.4);
+
+    /* Radius Tokens */
+    --radius-xs: 4px;
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --radius-xl: 24px;
+    /* Material Large */
+    --radius-2xl: 32px;
+    /* Material Extra Large */
+    --radius-full: 9999px;
+    --radius: var(--radius-lg);
+
+    /* === Dark Mode (Default) - Material Design 3 Specification === */
+
+    /* 1. Surface System - Based on MD3 Elevation Overlays on #121212 base */
+    --background: 0 0% 7%;
+    /* #121212 Elevation 0 - Page Background */
+    --surface: 0 0% 12%;
+    /* #1E1E1E Elevation 1 */
+    --surface-dim: 0 0% 10%;
+    /* #1A1A1A - Between 0-1 */
+    --surface-container-lowest: 0 0% 14%;
+    /* #242424 Elevation 2 - Cards (浮起) */
+    --surface-container-low: 0 0% 16%;
+    /* #292929 */
+    --surface-container: 0 0% 17%;
+    /* #2C2C2C Elevation 3 - Filled Inputs */
+    --surface-container-high: 0 0% 22%;
+    /* #373737 Elevation 4 - Strong Hover */
+    --surface-container-highest: 0 0% 25%;
+    /* #404040 Elevation 5 */
+
+    /* 2. Content Colors - WCAG AAA Compliant (≥7:1 contrast ratio) */
     --foreground: 0 0% 98%;
-    --muted: 0 0% 60%;
-    --border: 0 0% 100% / 0.08;
+    /* #FAFAFA - 17.1:1 High Emphasis Text */
+    --foreground-secondary: 0 0% 72%;
+    /* #B8B8B8 - 8.2:1 Medium Emphasis */
+    --foreground-tertiary: 0 0% 60%;
+    /* #999999 - 5.9:1 Disabled/Large Text */
+    --muted: 0 0% 65%;
+    /* #A6A6A6 - 7.0:1 Placeholder Text */
+    --muted-foreground: 0 0% 72%;
+    /* Same as secondary */
 
-    --primary: var(--blue-500);
+    /* 3. Border System */
+    --border: 0 0% 25%;
+    /* #404040 - Clear on cards */
+    --border-subtle: 0 0% 18%;
+    /* #2E2E2E - Subtle dividers */
+    --input: var(--border);
+
+    /* 4. Action Colors - Dark Mode Adjusted */
+    --primary: 221 70% 65%;
+    /* #5B8DEF - Lighter, less saturated for dark */
     --primary-foreground: 0 0% 98%;
+    /* #FAFAFA */
+    --ring: 221 70% 65%;
 
-    --card: 0 0% 5%;
-    --card-foreground: 0 0% 98%;
+    /* 5. Semantic Colors */
+    --destructive: 0 84% 60%;
+    /* Red - brightened for dark */
+    --destructive-foreground: 0 0% 98%;
 
-    --popover: 0 0% 5%;
-    --popover-foreground: 0 0% 98%;
+    /* 6. Data Visualization Colors - Adjusted for dark backgrounds */
+    --chart-1: 221 70% 65%;
+    /* Blue - same as primary */
+    --chart-2: 142 71% 55%;
+    /* Green - lightened */
+    --chart-3: 38 92% 60%;
+    /* Orange - lightened */
+    --chart-4: 262 83% 68%;
+    /* Purple - lightened */
+    --chart-5: 330 81% 70%;
+    /* Pink - lightened */
 
-    /* Glass Semantics (Dark) */
-    --glass-bg: rgba(255, 255, 255, 0.05);
-    --glass-border: rgba(255, 255, 255, 0.08);
-    --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-
-    /* Shadcn/Tailwind Mappings */
-    --input: 0 0% 100% / 0.1;
-    --ring: var(--blue-500);
-
-    /* === 排版系统 === */
-    --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-    --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
-    --font-display: 'Outfit', 'Inter', sans-serif;
-
-    /* === 间距系统 === */
-    --space-1: 0.25rem;
-    --space-2: 0.5rem;
-    --space-3: 0.75rem;
-    --space-4: 1rem;
-    --space-6: 1.5rem;
-    --space-8: 2rem;
-    --space-12: 3rem;
-    --space-16: 4rem;
-
-    /* === 圆角系统 === */
-    --radius-sm: 0.375rem;
-    --radius-md: 0.5rem;
-    --radius-lg: 0.75rem;
-    --radius-xl: 1rem;
-    --radius-2xl: 1.5rem;
-    --radius: 0.75rem;
-
-    /* === 动画系统 === */
-    --duration-fast: 150ms;
-    --duration-normal: 250ms;
-    --duration-slow: 400ms;
-    --duration-slower: 600ms;
-
-    --ease-natural: cubic-bezier(0.4, 0.0, 0.2, 1);
-    --ease-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
-    --ease-out: cubic-bezier(0.0, 0.0, 0.2, 1);
-    --ease-in: cubic-bezier(0.4, 0.0, 1, 1);
-
-    /* === Data Visualization Colors (Dark) === */
-    --chart-1: 217 91% 60%;
-    --chart-2: 151 55% 42%;
-    --chart-3: 35 92% 50%;
-    --chart-4: 262 83% 58%;
-    --chart-5: 330 81% 60%;
+    /* 7. Elevation Shadows - Dark Mode Specific (stronger, more diffused) */
+    --elevation-1: 0 2px 4px 0 rgba(0, 0, 0, 0.5);
+    --elevation-2: 0 4px 8px -1px rgba(0, 0, 0, 0.6), 0 2px 4px -1px rgba(0, 0, 0, 0.4);
+    --elevation-3: 0 20px 30px -5px rgba(0, 0, 0, 0.7), 0 8px 12px -6px rgba(0, 0, 0, 0.5);
   }
 
-  /* Light Mode Overrides */
+  /* === Light Mode (Primary Theme) === */
   .light {
-    --background: 210 40% 98%;
-    /* Alice Blue-ish */
+    /* 1. Surface System - Tailwind Standard Gray (方案A) */
+    --background: 220 14% 96%;
+    /* #F3F4F6 gray-100 - Page Background */
+    --surface-dim: 220 14% 96%;
+    /* #F3F4F6 gray-100 */
     --surface: 0 0% 100%;
-    --surface-elevated: 0 0% 100%;
-    /* MD3 Surface Tones (Light) */
+    /* #FFFFFF pure white */
     --surface-container-lowest: 0 0% 100%;
-    --surface-container-low: 210 20% 96%;
-    --surface-container: 210 20% 94%;
-    --surface-container-high: 210 20% 92%;
-    --surface-container-highest: 210 20% 90%;
-    --foreground: var(--slate-900);
-    --muted: var(--slate-500);
-    --border: var(--slate-200);
+    /* #FFFFFF - Cards (pure white) */
+    --surface-container-low: 210 20% 98%;
+    /* #F9FAFB gray-50 */
+    --surface-container: 220 14% 96%;
+    /* #F3F4F6 gray-100 - Filled Inputs */
+    --surface-container-high: 220 13% 91%;
+    /* #E5E7EB gray-200 - Hover */
+    --surface-container-highest: 220 13% 87%;
+    /* #D1D5DB gray-300 */
 
-    --primary: var(--blue-600);
+    /* 2. Content Colors (On-Surface) */
+    /* background已在上面直接定义为gray-100 */
+    --foreground: 222 47% 11%;
+    /* #0F172A - High Emphasis */
+    --foreground-secondary: 215 16% 47%;
+    /* #64748B - Medium Emphasis */
+    --foreground-tertiary: 215 14% 65%;
+    /* #94A3B8 - Disabled/Placeholder */
+    --muted: var(--foreground-secondary);
+
+    /* 3. Border System (Minimalist) */
+    --border: 220 13% 91%;
+    /* #E5E7EB - Opaque border if needed */
+    --border-subtle: 220 13% 91%;
+    /* Same for consistency */
+    --input: var(--border);
+
+    /* 4. Action Colors */
+    --primary: 221 83% 53%;
+    /* Blue 600 */
     --primary-foreground: 0 0% 100%;
+    --ring: 221 83% 53%;
 
-    --card: 0 0% 100%;
-    --card-foreground: var(--slate-900);
+    /* 5. Elevation (Shadow System) - Tailwind Standard (方案A) */
+    /* Tailwind shadow-sm */
+    --elevation-1: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    /* Tailwind shadow-md - 清晰可见 */
+    --elevation-2: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+    /* Tailwind shadow-lg - 强浮起 */
+    --elevation-3: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
 
-    --popover: 0 0% 100%;
-    --popover-foreground: var(--slate-900);
-
-    /* Glass Semantics (Light) */
-    --glass-bg: rgba(255, 255, 255, 0.75);
-    --glass-border: rgba(226, 232, 240, 0.6);
-    --glass-shadow: 0 4px 20px rgba(148, 163, 184, 0.1);
-
-    /* === Data Visualization Colors (Light) === */
+    /* Data Viz Colors */
     --chart-1: 221 83% 53%;
-    /* Stronger Blue */
-    --chart-2: 161 94% 30%;
-    /* Darker Green */
-    --chart-3: 32 95% 44%;
-    /* Darker Orange */
+    /* Blue */
+    --chart-2: 142 71% 45%;
+    /* Green (Success) */
+    --chart-3: 38 92% 50%;
+    /* Orange (Warning) */
     --chart-4: 262 83% 58%;
-    /* Violet */
+    /* Purple (Data) */
     --chart-5: 330 81% 60%;
     /* Pink */
-    /* Slate-200 alpha */
-    --glass-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
-
-    --input: var(--slate-200);
-    --ring: var(--blue-600);
   }
 }
 
@@ -160,36 +203,57 @@
   }
 }
 
-/* === 玻璃态组件 === */
 @layer components {
-  .glass-card {
-    background: var(--glass-bg);
-    backdrop-filter: blur(20px) saturate(180%);
-    border: 1px solid var(--glass-border);
-    box-shadow: var(--glass-shadow);
+  /* === V3 Component System === */
+
+  /* 1. Surface Card - The "Godly" Floating Paper */
+  .card-standard {
+    @apply rounded-2xl shadow-none transition-all duration-300;
+    background-color: hsl(var(--surface-container-lowest));
+    box-shadow: var(--elevation-2);
+    border: 1px solid hsl(var(--border));
   }
 
-  .glass-nav {
-    background: var(--glass-bg);
-    backdrop-filter: blur(24px) saturate(180%);
-    border-right: 1px solid var(--glass-border);
-  }
-
-  .glass-button {
-    background: var(--glass-bg);
-    backdrop-filter: blur(8px);
-    border: 1px solid var(--glass-border);
-    transition: all var(--duration-normal) var(--ease-natural);
-  }
-
-  .glass-button:hover {
-    background: rgba(255, 255, 255, 0.15);
+  .card-standard:hover {
     transform: translateY(-2px);
+    box-shadow: var(--elevation-3);
   }
 
-  .glass-button:active {
-    transform: translateY(0);
-    transition-duration: var(--duration-fast);
+  /* 3. Buttons - Pill Shaped & Tactile */
+  .btn-primary {
+    @apply h-10 px-6 rounded-full bg-primary text-white font-semibold text-sm shadow-sm hover:shadow-md hover:brightness-110 active:scale-95 transition-all flex items-center justify-center gap-2;
+  }
+
+  .btn-secondary {
+    @apply h-10 px-6 rounded-full bg-surface-container-lowest border border-border text-foreground font-medium text-sm hover:bg-surface-container transition-colors flex items-center justify-center gap-2;
+  }
+
+  .btn-ghost {
+    @apply h-10 px-4 rounded-full text-foreground-secondary font-medium text-sm hover:bg-foreground/5 hover:text-foreground transition-colors flex items-center justify-center gap-2;
+  }
+
+  /* 4. Inputs - Filled Google Material Style */
+  .input-standard {
+    @apply h-11 w-full px-4 rounded-xl bg-surface-container border-transparent text-foreground text-sm placeholder:text-foreground-tertiary focus:bg-surface-container-high focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all;
+  }
+
+  /* 5. Typography Utilities */
+  .text-display {
+    @apply font-sans font-black tracking-tight text-foreground;
+  }
+
+  .text-label {
+    @apply font-mono text-[11px] font-bold uppercase tracking-wider text-foreground-secondary;
+  }
+
+  /* 6. List/Table Items */
+  .list-row {
+    @apply border-b border-transparent hover:bg-foreground/5 transition-colors cursor-pointer;
+  }
+
+  /* 6. Table Label (Header Text) */
+  .text-label {
+    @apply text-[10px] font-bold uppercase tracking-wider text-muted-foreground;
   }
 }
 

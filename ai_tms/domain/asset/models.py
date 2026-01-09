@@ -9,10 +9,10 @@ def get_now_str():
 
 class EventType:
     """事件语义类型值对象"""
-    IMP = "Exposure"
-    CLK = "Click"
-    PV  = "PageView"
-    OTHER = "Other"
+    IMP = "EXPOSURE"
+    CLK = "CLICK"
+    PV  = "PAGE_VIEW"
+    OTHER = "OTHER"
 
 class EnumOption:
     """枚举选项值对象"""
@@ -21,7 +21,7 @@ class EnumOption:
         self.label = label
         self.description = description
 
-class Property:
+class Parameter:
     """参数值对象 (Value Object within Asset)"""
     def __init__(self, id: str, tenant_id: str, name: str, data_type: str, category: str, 
                  description: str = "", is_required: bool = False, enum_options: List[EnumOption] = None, 
@@ -89,11 +89,11 @@ class Event:
     核心亮点：充血模型，内聚了状态流转与锁定逻辑。
     """
     def __init__(self, id: str, tenant_id: str, group_id: str, name: str, 
-                 description: str = "", is_active: bool = True, status: str = 'Online', 
+                 description: str = "", is_active: bool = True, status: str = 'ONLINE', 
                  locked_by_request: str = None, domain_id: str = None, 
                  page_id: str = None, event_type: str = EventType.OTHER,
                  created_at: str = None, updated_at: str = None, 
-                 properties: List[Property] = None):
+                 properties: List[Parameter] = None):
         self.id = id
         self.tenant_id = tenant_id
         self.group_id = group_id
@@ -110,10 +110,10 @@ class Event:
         self._properties = properties or [] # 聚合内持有的参数列表
 
     @property
-    def properties(self) -> List[Property]:
+    def properties(self) -> List[Parameter]:
         return self._properties
     
-    def set_properties(self, props: List[Property]):
+    def set_properties(self, props: List[Parameter]):
         self._properties = props
 
     # --- Domain Logic: Locking Mechanism ---
@@ -126,13 +126,13 @@ class Event:
         if self.locked_by_request and self.locked_by_request != request_id:
             raise ValueError(f"Event {self.name} is already locked by request {self.locked_by_request}")
         
-        self.status = 'Editing'
+        self.status = 'EDITING'
         self.locked_by_request = request_id
         self.updated_at = get_now_str()
 
     def unlock(self):
         """释放锁定"""
-        self.status = 'Online'
+        self.status = 'ONLINE'
         self.locked_by_request = None
         self.updated_at = get_now_str()
 

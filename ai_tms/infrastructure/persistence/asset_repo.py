@@ -1,7 +1,7 @@
 import sqlite3
 import uuid
 from typing import Optional, List
-from ai_tms.domain.asset.models import App, Domain, Page, Event, Property, EventType, EnumOption
+from ai_tms.domain.asset.models import App, Domain, Page, Event, Parameter, EventType, EnumOption
 from ai_tms.domain.asset.repositories import IAssetRepository, IPageRepository
 
 class SqlitePageRepository(IPageRepository):
@@ -114,9 +114,9 @@ class SqliteAssetRepository(IAssetRepository):
         finally:
             conn.close()
 
-    # --- Property Helper ---
-    def find_property_by_name(self, tenant_id: str, name: str) -> Optional[Property]:
-        # 从 DB 读取 Property 定义，用于复用
+    # --- Parameter Helper ---
+    def find_property_by_name(self, tenant_id: str, name: str) -> Optional[Parameter]:
+        # 从 DB 读取 Parameter 定义，用于复用
         conn = self._get_conn()
         try:
             cursor = conn.cursor()
@@ -128,7 +128,7 @@ class SqliteAssetRepository(IAssetRepository):
             cursor.execute("SELECT * FROM property_enums WHERE property_id = ?", (r['id'],))
             enums = [EnumOption(e['value'], e['label'], e['description']) for e in cursor.fetchall()]
             
-            return Property(r['id'], r['tenant_id'], r['name'], r['data_type'], r['category'], r['description'], False, enums, r['created_at'])
+            return Parameter(r['id'], r['tenant_id'], r['name'], r['data_type'], r['category'], r['description'], False, enums, r['created_at'])
         finally:
             conn.close()
 
@@ -195,7 +195,7 @@ class SqliteAssetRepository(IAssetRepository):
                 p_id = prow['id']
                 cursor.execute("SELECT * FROM property_enums WHERE property_id = ?", (p_id,))
                 enums = [EnumOption(e['value'], e['label'], e['description']) for e in cursor.fetchall()]
-                props.append(Property(p_id, prow['tenant_id'], prow['name'], prow['data_type'], prow['category'], prow['description'], bool(prow['is_required']), enums, prow['created_at']))
+                props.append(Parameter(p_id, prow['tenant_id'], prow['name'], prow['data_type'], prow['category'], prow['description'], bool(prow['is_required']), enums, prow['created_at']))
             
             event.set_properties(props)
             return event
@@ -230,3 +230,14 @@ class SqliteAssetRepository(IAssetRepository):
 
     def unlock_event(self, event: Event):
         self.lock_event(event) # Same logic
+
+    def get_event_by_name(self, tenant_id: str, name: str) -> Optional[Event]:
+        conn = self._get_conn()
+        try:
+            cursor = conn.cursor()
+            cursor.execute("SELECT id FROM events WHERE tenant_id = ? AND name = ?", (tenant_id, name))
+            r = cursor.fetchone()
+            if not r: return None
+            return self.get_event_by_id(r['id'])
+        finally:
+            conn.close()

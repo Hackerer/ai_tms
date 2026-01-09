@@ -7,10 +7,15 @@ import {
     type RowSelectionState,
     type OnChangeFn,
     type HeaderContext,
-    type CellContext
+    type CellContext,
+    type HeaderGroup,
+    type Header,
+    type Row,
+    type Cell
 } from '@tanstack/react-table';
 import type { EventChange } from '../types/workflow';
 import { cn } from '../lib/utils';
+import { EventScreenshot } from './EventScreenshot';
 
 interface EventGridProps {
     data: EventChange[];
@@ -41,7 +46,7 @@ function IndeterminateCheckbox({
             type="checkbox"
             ref={ref}
             className={cn(
-                "cursor-pointer rounded-sm bg-muted/10 border border-border text-primary focus:ring-primary/50 accent-primary w-4 h-4",
+                "cursor-pointer rounded border border-border bg-muted/10 text-primary focus:ring-primary/50 accent-primary w-3.5 h-3.5 transition-all hover:border-primary/50",
                 className
             )}
             {...rest}
@@ -78,7 +83,7 @@ const EditableCell = ({
     };
 
     if (isReadOnly) {
-        return <span className={cn("truncate block w-full text-foreground", className)} title={value}>{value || '-'}</span>;
+        return <span className={cn("truncate block w-full text-foreground/80", className)} title={value}>{value || '-'}</span>;
     }
 
     return (
@@ -92,7 +97,7 @@ const EditableCell = ({
                 }
             }}
             className={cn(
-                "w-full bg-transparent border-none p-1 -ml-1 rounded focus:outline-none focus:bg-muted/10 focus:ring-1 focus:ring-primary/30 transition-all placeholder:text-muted-foreground/30 text-foreground",
+                "w-full bg-transparent border-none p-1 -ml-1 rounded focus:outline-none focus:bg-surface-container focus:ring-1 focus:ring-primary/30 transition-all placeholder:text-muted-foreground/30 text-foreground",
                 className
             )}
             placeholder="-"
@@ -123,7 +128,6 @@ export const EventGrid = ({
                             checked: table.getIsAllRowsSelected(),
                             indeterminate: table.getIsSomeRowsSelected(),
                             onChange: table.getToggleAllRowsSelectedHandler(),
-                            className: "border-border bg-muted/10"
                         }}
                     />
                 </div>
@@ -136,45 +140,64 @@ export const EventGrid = ({
                             disabled: !row.getCanSelect(),
                             indeterminate: row.getIsSomeSelected(),
                             onChange: row.getToggleSelectedHandler(),
-                            className: "border-border bg-muted/10"
                         }}
                     />
                 </div>
             ),
             size: 40,
         },
+        // 第1列：ID（前置）
+        columnHelper.accessor('id', {
+            header: 'ID',
+            cell: (info: CellContext<EventChange, string>) => (
+                <span className="font-mono text-[10px] text-muted-foreground/60">
+                    {info.getValue()}
+                </span>
+            ),
+            size: 100,
+        }),
+        // 第2列：截图
+        columnHelper.accessor('screenshot_url', {
+            header: '截图',
+            cell: (info: CellContext<EventChange, string | undefined>) => (
+                <EventScreenshot
+                    url={info.getValue() || null}
+                    eventId={info.row.original.id}
+                    editable={!isReadOnly}
+                    onUpload={(url) => onUpdate(info.row.index, 'screenshot_url', url)}
+                    onDelete={() => onUpdate(info.row.index, 'screenshot_url', null)}
+                />
+            ),
+            size: 80,
+        }),
+        // 第3列：Code（替代原名称列）
         columnHelper.accessor('name', {
-            header: '事件名称',
-            cell: info => (
+            header: 'CODE',
+            cell: (info: CellContext<EventChange, string>) => (
                 <EditableCell
                     value={info.getValue()}
                     rowIndex={info.row.index}
                     columnId="name"
                     onUpdate={onUpdate}
                     isReadOnly={isReadOnly}
-                    className="font-mono text-sm font-bold"
+                    className="font-mono text-sm font-semibold text-foreground"
                 />
             ),
-            size: 200,
-        }),
-        columnHelper.accessor('id', {
-            header: 'ID',
-            cell: info => <span className="font-mono text-[10px] text-muted-foreground">{info.getValue()}</span>,
-            size: 100,
+            size: 180,
         }),
         columnHelper.accessor('operation', {
             header: '操作类型',
-            cell: info => {
+            cell: (info: CellContext<EventChange, 'create' | 'edit' | 'delete'>) => {
                 const op = info.getValue() || 'edit';
                 const colors = {
-                    create: 'bg-green-500/10 text-green-600 border-green-500/20',
-                    edit: 'bg-blue-500/10 text-blue-600 border-blue-500/20',
-                    delete: 'bg-red-500/10 text-red-600 border-red-500/20',
+                    create: 'bg-green-500/10 text-green-400 border-green-500/20',
+                    edit: 'bg-blue-500/10 text-blue-400 border-blue-500/20',
+                    delete: 'bg-red-500/10 text-red-400 border-red-500/20',
                 };
                 return (
                     <span className={cn(
                         "px-2 py-0.5 rounded border text-[10px] font-bold uppercase tracking-tighter",
-                        colors[op] || colors.edit
+                        colors[op as keyof typeof colors] || colors.edit
                     )}>
                         {op}
                     </span>
@@ -184,22 +207,22 @@ export const EventGrid = ({
         }),
         columnHelper.accessor('description', {
             header: '描述',
-            cell: info => (
+            cell: (info: CellContext<EventChange, string | undefined>) => (
                 <EditableCell
                     value={info.getValue() || ''}
                     rowIndex={info.row.index}
                     columnId="description"
                     onUpdate={onUpdate}
                     isReadOnly={isReadOnly}
-                    className="text-xs text-muted-foreground"
+                    className="text-xs text-muted-foreground/80"
                 />
             ),
             size: 300,
         }),
         columnHelper.accessor('parameters', {
             header: '参数量',
-            cell: info => (
-                <span className="text-[10px] font-mono bg-muted/10 border border-border px-1.5 py-0.5 rounded text-muted-foreground">
+            cell: (info: CellContext<EventChange, any[]>) => (
+                <span className="text-[10px] font-mono bg-muted px-1.5 py-0.5 rounded border border-border text-muted-foreground">
                     {(info.getValue() || []).length}
                 </span>
             ),
@@ -216,21 +239,21 @@ export const EventGrid = ({
         enableRowSelection: true,
         onRowSelectionChange: setRowSelection,
         getCoreRowModel: getCoreRowModel(),
-        getRowId: row => row.id, // Use Event ID for selection state
+        getRowId: (row: EventChange) => row.id, // Use Event ID for selection state
         debugTable: false,
     });
 
     return (
-        <div className="w-full overflow-hidden rounded-xl border border-border bg-card/40 backdrop-blur-sm shadow-sm">
+        <div className="card-standard p-0 overflow-hidden">
             <div className="overflow-x-auto">
-                <table className="w-full text-left border-collapse table-fixed">
+                <table className="w-full min-w-[600px] text-left border-collapse">
                     <thead>
-                        {table.getHeaderGroups().map(headerGroup => (
-                            <tr key={headerGroup.id} className="border-b border-border bg-muted/5">
-                                {headerGroup.headers.map(header => (
+                        {table.getHeaderGroups().map((headerGroup: HeaderGroup<EventChange>) => (
+                            <tr key={headerGroup.id} className="border-b border-border/50">
+                                {headerGroup.headers.map((header: Header<EventChange, unknown>) => (
                                     <th
                                         key={header.id}
-                                        className="px-4 py-3 text-[10px] font-bold uppercase tracking-wider text-muted-foreground select-none"
+                                        className="px-4 py-4 text-label select-none"
                                         style={{ width: header.getSize() }}
                                     >
                                         {header.isPlaceholder
@@ -244,16 +267,16 @@ export const EventGrid = ({
                             </tr>
                         ))}
                     </thead>
-                    <tbody className="divide-y divide-border/50">
-                        {table.getRowModel().rows.map(row => (
+                    <tbody className="divide-y divide-border/30">
+                        {table.getRowModel().rows.map((row: Row<EventChange>) => (
                             <tr
                                 key={row.id}
                                 className={cn(
                                     "group transition-colors",
-                                    row.getIsSelected() ? "bg-primary/5 hover:bg-primary/10" : "hover:bg-muted/5"
+                                    row.getIsSelected() ? "bg-blue-500/10 hover:bg-blue-500/15" : "hover:bg-muted/5"
                                 )}
                             >
-                                {row.getVisibleCells().map(cell => (
+                                {row.getVisibleCells().map((cell: Cell<EventChange, unknown>) => (
                                     <td
                                         key={cell.id}
                                         className="px-4 py-2 overflow-hidden"
@@ -265,17 +288,22 @@ export const EventGrid = ({
                         ))}
                         {data.length === 0 && (
                             <tr>
-                                <td colSpan={columns.length} className="px-4 py-12 text-center text-muted-foreground text-sm">
-                                    暂无数据
+                                <td colSpan={columns.length} className="py-16 text-center">
+                                    <div className="text-muted-foreground/30 font-medium text-xs uppercase tracking-widest">
+                                        No modifications found
+                                    </div>
                                 </td>
                             </tr>
                         )}
                     </tbody>
                 </table>
             </div>
-            <div className="px-4 py-2 border-t border-border bg-muted/5 text-[10px] text-muted-foreground flex justify-between items-center">
-                <span>共 {data.length} 条记录</span>
-                <span className="font-mono opacity-50">Row Selection Enabled</span>
+            <div className="px-4 py-2 border-t border-border bg-muted/5 text-[10px] text-muted-foreground/40 flex justify-between items-center font-mono">
+                <div className="flex gap-4">
+                    <span>TOTAL: {data.length}</span>
+                    <span>SELECTED: {Object.keys(rowSelection).length}</span>
+                </div>
+                <span className="opacity-50 uppercase tracking-widest">Grid Engine 2.1.2</span>
             </div>
         </div>
     );

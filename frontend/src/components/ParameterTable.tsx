@@ -46,31 +46,31 @@ export const ParameterTable = ({ params, eventIndex, isReadOnly, onParamChange, 
     };
 
     return (
-        <div className="rounded-lg border border-border bg-background shadow-sm overflow-hidden mb-4">
+        <div className="mx-6 mb-4 p-4 rounded-xl bg-surface-container border border-border shadow-sm">
             <table className="w-full text-left">
-                <thead className="bg-muted/10">
+                <thead>
                     <tr className="border-b border-border">
-                        <th className="px-4 py-2 text-[10px] font-bold uppercase text-muted-foreground w-[25%] tracking-wide">
+                        <th className="pb-2 text-[10px] font-bold uppercase text-muted-foreground w-[25%] tracking-wide">
                             参数键名 (Key)
                         </th>
-                        <th className="px-4 py-2 text-[10px] font-bold uppercase text-muted-foreground w-[15%] tracking-wide">
+                        <th className="pb-2 text-[10px] font-bold uppercase text-muted-foreground w-[15%] tracking-wide">
                             数据类型
                         </th>
-                        <th className="px-4 py-2 text-[10px] font-bold uppercase text-muted-foreground w-[35%] tracking-wide">
+                        <th className="pb-2 text-[10px] font-bold uppercase text-muted-foreground w-[35%] tracking-wide">
                             含义说明
                         </th>
-                        <th className="px-4 py-2 text-[10px] font-bold uppercase text-muted-foreground w-[15%] text-center tracking-wide">
+                        <th className="pb-2 text-[10px] font-bold uppercase text-muted-foreground w-[15%] text-center tracking-wide">
                             必填
                         </th>
-                        <th className="px-4 py-2 w-[10%]"></th>
+                        <th className="pb-2 w-[10%]"></th>
                     </tr>
                 </thead>
-                <tbody className="divide-y divide-border/30">
+                <tbody className="divide-y divide-border">
                     {params.map((p, i) => {
                         const isReferenced = !!p.ref_id;
                         return (
                             <tr key={i} className="group hover:bg-muted/5 transition-colors">
-                                <td className="px-4 py-2.5 text-xs font-mono relative">
+                                <td className="py-2.5 text-xs font-mono relative">
                                     <div className="flex items-center gap-2">
                                         {isReferenced && (
                                             <div className="group/ref relative" title={p.category === 'global' ? '引用自公共参数池' : '引用自业务参数池'}>
@@ -92,15 +92,15 @@ export const ParameterTable = ({ params, eventIndex, isReadOnly, onParamChange, 
                                                     if (e.key === 'Escape') cancelEdit();
                                                 }}
                                                 autoFocus
-                                                className="w-full bg-background border border-primary/30 rounded px-2 py-1 text-xs focus:outline-none focus:border-primary/60 focus:ring-2 focus:ring-primary/10 shadow-sm"
+                                                className="w-full bg-surface-container border border-primary/30 rounded px-2 py-1 text-xs focus:outline-none focus:border-primary/60 focus:ring-2 focus:ring-primary/10 transition-all"
                                             />
                                         ) : (
                                             <span
                                                 onClick={() => !isReadOnly && !isReferenced && startEdit(i, 'key', p.key)}
                                                 className={cn(
-                                                    "font-medium",
-                                                    !isReadOnly && !isReferenced ? 'cursor-pointer hover:text-primary transition-colors' : '',
-                                                    isReferenced ? 'text-muted-foreground' : 'text-foreground'
+                                                    "font-medium transition-colors",
+                                                    !isReadOnly && !isReferenced ? 'cursor-pointer hover:text-primary' : '',
+                                                    isReferenced ? 'text-muted-foreground/50' : 'text-foreground/90'
                                                 )}
                                             >
                                                 {p.key}
@@ -108,7 +108,7 @@ export const ParameterTable = ({ params, eventIndex, isReadOnly, onParamChange, 
                                         )}
                                     </div>
                                 </td>
-                                <td className="px-4 py-2.5">
+                                <td className="py-2.5">
                                     {!isReadOnly && !isReferenced && editingCell?.paramIdx === i && editingCell?.field === 'type' ? (
                                         <select
                                             value={editValue}
@@ -118,10 +118,10 @@ export const ParameterTable = ({ params, eventIndex, isReadOnly, onParamChange, 
                                                 setEditingCell(null);
                                             }}
                                             autoFocus
-                                            className="bg-background border border-primary/30 rounded px-2 py-1 text-[10px] font-bold uppercase focus:outline-none focus:border-primary"
+                                            className="bg-surface-container border border-primary/30 rounded px-2 py-1 text-[10px] font-bold uppercase focus:outline-none focus:border-primary text-foreground"
                                         >
                                             {DATA_TYPES.map(type => (
-                                                <option key={type} value={type}>{type}</option>
+                                                <option key={type} value={type} className="bg-background">{type}</option>
                                             ))}
                                         </select>
                                     ) : (
@@ -129,20 +129,20 @@ export const ParameterTable = ({ params, eventIndex, isReadOnly, onParamChange, 
                                             onClick={() => !isReadOnly && !isReferenced && startEdit(i, 'type', p.type)}
                                             className={cn(
                                                 "text-[10px] px-2 py-0.5 rounded border font-bold uppercase inline-block",
-                                                p.type === 'String' && "bg-blue-500/10 text-blue-600 border-blue-500/20",
-                                                p.type === 'Number' && "bg-green-500/10 text-green-600 border-green-500/20",
-                                                p.type === 'Boolean' && "bg-purple-500/10 text-purple-600 border-purple-500/20",
-                                                p.type === 'Object' && "bg-orange-500/10 text-orange-600 border-orange-500/20",
-                                                p.type === 'Array' && "bg-pink-500/10 text-pink-600 border-pink-500/20",
-                                                !isReadOnly && !isReferenced && "cursor-pointer hover:opacity-80 transition-opacity",
-                                                isReferenced && "opacity-80"
+                                                p.type === 'String' && "bg-blue-500/10 text-blue-400 border-blue-500/20",
+                                                p.type === 'Number' && "bg-green-500/10 text-green-400 border-green-500/20",
+                                                p.type === 'Boolean' && "bg-purple-500/10 text-purple-400 border-purple-500/20",
+                                                p.type === 'Object' && "bg-orange-500/10 text-orange-400 border-orange-500/20",
+                                                p.type === 'Array' && "bg-pink-500/10 text-pink-400 border-pink-500/20",
+                                                !isReadOnly && !isReferenced && "cursor-pointer hover:brightness-125 transition-all",
+                                                isReferenced && "opacity-50"
                                             )}
                                         >
                                             {p.type}
                                         </span>
                                     )}
                                 </td>
-                                <td className="px-4 py-2.5 text-xs text-muted-foreground">
+                                <td className="py-2.5 text-xs text-muted-foreground">
                                     {!isReadOnly && !isReferenced && editingCell?.paramIdx === i && editingCell?.field === 'desc' ? (
                                         <input
                                             type="text"
@@ -154,39 +154,40 @@ export const ParameterTable = ({ params, eventIndex, isReadOnly, onParamChange, 
                                                 if (e.key === 'Escape') cancelEdit();
                                             }}
                                             autoFocus
-                                            className="w-full bg-background border border-primary/30 rounded px-2 py-1 text-xs focus:outline-none focus:border-primary/60 focus:ring-2 focus:ring-primary/10 shadow-sm"
+                                            className="w-full bg-surface-container border border-primary/30 rounded px-2 py-1 text-xs focus:outline-none focus:border-primary/60 focus:ring-2 focus:ring-primary/10 transition-all text-foreground"
                                         />
                                     ) : (
                                         <span
                                             onClick={() => !isReadOnly && !isReferenced && startEdit(i, 'desc', p.desc)}
                                             className={cn(
-                                                !isReadOnly && !isReferenced ? 'cursor-pointer hover:text-foreground transition-colors' : '',
-                                                isReferenced ? 'italic opacity-70' : ''
+                                                "transition-colors",
+                                                !isReadOnly && !isReferenced ? 'cursor-pointer hover:text-foreground' : '',
+                                                isReferenced ? 'italic opacity-40' : 'opacity-80'
                                             )}
                                         >
                                             {p.desc}
                                         </span>
                                     )}
                                 </td>
-                                <td className="px-4 py-2.5 text-center">
+                                <td className="py-2.5 text-center">
                                     <div
                                         onClick={() => !isReadOnly && onParamChange(eventIndex, i, 'isRequired', !p.isRequired)}
                                         className={cn(
                                             "w-2 h-2 rounded-full mx-auto transition-all",
-                                            p.isRequired ? "bg-orange-500 ring-2 ring-orange-500/20" : "bg-muted-foreground/30",
+                                            p.isRequired ? "bg-orange-500 shadow-[0_0_8px_rgba(249,115,22,0.5)]" : "bg-muted/10",
                                             !isReadOnly && "cursor-pointer hover:scale-125"
                                         )}
                                         title={p.isRequired ? "Required" : "Optional"}
                                     />
                                 </td>
-                                <td className="px-4 py-2.5 text-right">
+                                <td className="py-2.5 text-right">
                                     {!isReadOnly && (
                                         <button
                                             onClick={() => onParamDelete(eventIndex, i)}
                                             className="p-1.5 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-500/10 rounded-md"
                                             title="Remove parameter"
                                         >
-                                            <Trash2 className="w-3.5 h-3.5 text-muted-foreground hover:text-red-500" />
+                                            <Trash2 className="w-3.5 h-3.5 text-muted-foreground hover:text-red-400 transition-colors" />
                                         </button>
                                     )}
                                 </td>
@@ -194,11 +195,11 @@ export const ParameterTable = ({ params, eventIndex, isReadOnly, onParamChange, 
                         );
                     })}
                     {!isReadOnly && (
-                        <tr className="bg-muted/5 border-t border-border">
+                        <tr className="bg-muted/5">
                             <td colSpan={5} className="py-2 px-4">
                                 <button
                                     onClick={() => onParamAdd(eventIndex)}
-                                    className="text-[10px] font-bold text-primary flex items-center gap-1.5 hover:underline py-1"
+                                    className="text-[10px] font-bold text-primary flex items-center gap-1.5 hover:text-primary/80 transition-colors py-1 uppercase tracking-wider"
                                 >
                                     <Plus className="w-3.5 h-3.5" /> 引用或新建字段 (Add Field)
                                 </button>

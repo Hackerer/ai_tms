@@ -20,7 +20,7 @@ export const SubmitConfirmModal = ({ isOpen, onClose, onConfirm, changes }: Subm
 
     return (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center animate-in fade-in duration-200">
-            <div className="w-[500px] glass-card rounded-2xl border-white/10 overflow-hidden shadow-2xl animate-in zoom-in-95 duration-300">
+            <div className="w-[500px] card-standard overflow-hidden animate-in zoom-in-95 duration-300">
                 {/* Header */}
                 <div className="px-6 py-4 border-b border-white/10 bg-white/5">
                     <h3 className="text-lg font-bold">确认提交审批?</h3>

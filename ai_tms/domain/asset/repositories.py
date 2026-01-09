@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from typing import Optional, List
-from .models import App, Domain, Page, Event, Property
+from .models import App, Domain, Page, Event, Parameter
 
 class IPageRepository(ABC):
     """页面仓储接口"""
@@ -65,9 +65,14 @@ class IAssetRepository(ABC):
     def unlock_event(self, event: Event):
         pass
 
-    # --- Property Value Objects ---
     @abstractmethod
-    def find_property_by_name(self, tenant_id: str, name: str) -> Optional[Property]:
+    def get_event_by_name(self, tenant_id: str, name: str) -> Optional[Event]:
+        """根据租户和名称获取埋点聚合根"""
+        pass
+
+    # --- Parameter Value Objects ---
+    @abstractmethod
+    def find_property_by_name(self, tenant_id: str, name: str) -> Optional[Parameter]:
         pass
 
     # --- ID Generation ---

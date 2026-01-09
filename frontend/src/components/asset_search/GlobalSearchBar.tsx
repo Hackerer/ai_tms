@@ -17,10 +17,10 @@ export const GlobalSearchBar = ({ value, onChange, placeholder = "Search...", cl
                 value={value}
                 onChange={(e) => onChange(e.target.value)}
                 placeholder={placeholder}
-                className="w-full h-12 bg-muted/20 border-none rounded-full pl-12 pr-4 py-2 text-sm text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all shadow-sm hover:bg-muted/30"
+                className="w-full h-10 bg-surface-container border-none rounded-full pl-10 pr-4 py-2 text-sm text-foreground placeholder:text-muted focus:outline-none focus:ring-0 focus:bg-surface-container-high transition-all"
             />
             <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-1 pointer-events-none opacity-50">
-                <kbd className="hidden sm:inline-flex h-6 items-center gap-1 rounded-full border border-border bg-background px-2 font-mono text-[10px] font-medium text-muted-foreground shadow-sm">
+                <kbd className="hidden sm:inline-flex h-5 items-center gap-1 rounded border border-border bg-surface px-1.5 font-mono text-[10px] font-medium text-muted">
                     <span className="text-xs">⌘</span>K
                 </kbd>
             </div>

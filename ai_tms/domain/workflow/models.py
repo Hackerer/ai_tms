@@ -23,7 +23,7 @@ class HistoryLog:
             "timestamp": self.timestamp
         }
 
-class EventRef:
+class EventChange:
     """变更引用值对象 (对应 event_references JSON 中的一项)"""
     def __init__(self, event_id: str, operation: str, event_data: Dict[str, Any]):
         self.event_id = event_id
@@ -77,8 +77,8 @@ class TrackingRequest:
     3. 内聚状态流转逻辑
     """
     def __init__(self, id: str, title: str, tenant_id: str, group_id: str, created_user_id: str, 
-                 status: str = 'Draft', created_at: str = None, 
-                 event_references: List[EventRef] = None, 
+                 status: str = 'DRAFT', created_at: str = None, 
+                 event_references: List[EventChange] = None, 
                  history_logs: List[HistoryLog] = None, 
                  doc_url: str = ""):
         self.id = id
@@ -93,7 +93,7 @@ class TrackingRequest:
         self.doc_url = doc_url
 
     @property
-    def event_references(self) -> List[EventRef]:
+    def event_references(self) -> List[EventChange]:
         return self._event_references
     
     @property
@@ -111,13 +111,13 @@ class TrackingRequest:
         """核心：增加变更项"""
         # 简单去重逻辑：如果已存在同ID的操作，则覆盖（或根据业务需求抛错）
         self._event_references = [ref for ref in self._event_references if ref.event_id != event_id]
-        new_ref = EventRef(event_id, operation, data)
+        new_ref = EventChange(event_id, operation, data)
         self._event_references.append(new_ref)
 
     def submit(self, user_id: str):
-        if self.status != 'Draft':
+        if self.status != 'DRAFT':
             raise ValueError("Only Draft requests can be submitted")
-        self.status = 'Reviewing'
+        self.status = 'REVIEWING'
         self.add_log(user_id, "Submit", "需求提交审批")
 
     def approve_node(self, node: ApprovalNode, user_id: str, comment: str):
@@ -132,7 +132,7 @@ class TrackingRequest:
         node.status = 'Rejected'
         node.comment = comment
         node.processed_at = get_now_str()
-        self.status = 'Rejected' # 整个需求单打回
+        self.status = 'REJECTED' # 整个需求单打回
         self.add_log(user_id, "Approval:Rejected", f"节点 {node.node_name} 审批拒绝: {comment}")
 
     def mark_applied(self, user_id: str):
@@ -140,9 +140,9 @@ class TrackingRequest:
         标记需求单为已应用状态
         注意：实际的应用逻辑（数据写入）由应用服务协调，但状态变更和日志记录在此处内聚。
         """
-        if self.status != 'Reviewing' and self.status != 'Approved':
+        if self.status != 'REVIEWING' and self.status != 'APPROVED':
              # 实际业务中可能需要严格校验 'Approved'，这里为兼容旧逻辑放宽到 Reviewing
              pass 
         
-        self.status = 'Applied'
+        self.status = 'APPLIED'
         self.add_log(user_id, "Applied", "所有变更已同步至生产环境，版本已归档。")

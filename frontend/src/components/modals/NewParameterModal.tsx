@@ -196,10 +196,10 @@ export const NewParameterModal = ({ initialKey = '', onConfirm, onClose, isOpen 
         return (
             <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
                 <div
-                    className="absolute inset-0 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200"
+                    className="absolute inset-0 bg-black/60 backdrop-blur-md animate-in fade-in duration-200"
                     onClick={handleClose}
                 />
-                <div className="relative w-full max-w-2xl bg-background rounded-4xl overflow-hidden shadow-2xl animate-in zoom-in-95 duration-300 border border-border">
+                <div className="relative w-full max-w-2xl bg-background rounded-2xl overflow-hidden animate-in zoom-in-95 duration-300 border border-border" style={{ boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)' }}>
                     {content}
                 </div>
             </div>

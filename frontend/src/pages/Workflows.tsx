@@ -16,25 +16,30 @@ const KanbanCard = ({ request }: any) => {
 
     return (
         <div
-            className="glass-card p-4 rounded-xl border-border hover:border-primary/40 transition-all hover:translate-y-[-2px] group cursor-pointer shadow-sm mb-4"
+            className="card-standard p-5 mb-4 group cursor-pointer relative overflow-visible"
             onClick={() => navigate(`/workbench/${request.id}`)}
         >
             <div className="flex justify-between items-start mb-3">
-                <span className="text-[10px] font-mono text-muted-foreground">{request.id}</span>
-                <button className="p-1 opacity-0 group-hover:opacity-100 transition-opacity" onClick={(e) => { e.stopPropagation(); showToast('更多操作...'); }}>
-                    <MoreVertical className="w-3.5 h-3.5 text-muted-foreground" />
+                <span className="text-[10px] font-mono font-medium text-muted">{request.id}</span>
+                <button
+                    className="w-6 h-6 rounded-full flex items-center justify-center hover:bg-surface-container text-muted transition-colors opacity-0 group-hover:opacity-100"
+                    onClick={(e) => { e.stopPropagation(); showToast('Show options...'); }}
+                >
+                    <MoreVertical className="w-4 h-4" />
                 </button>
             </div>
-            <h4 className="text-sm font-bold mb-3 group-hover:text-primary transition-colors line-clamp-2 leading-snug">{request.title}</h4>
-            <div className="flex items-center justify-between pt-3 border-t border-border">
+            <h4 className="text-sm font-bold mb-4 text-foreground leading-snug group-hover:text-primary transition-colors pr-2">
+                {request.title}
+            </h4>
+
+            <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                    <div className="w-5 h-5 rounded-full bg-gradient-to-br from-primary/20 to-purple-500/20 flex items-center justify-center border border-border">
-                        <span className="text-[8px] font-bold text-primary">{request.author.charAt(0)}</span>
+                    <div className="w-6 h-6 rounded-full bg-gradient-to-br from-primary to-primary/60 flex items-center justify-center text-[9px] font-bold text-white shadow-sm ring-2 ring-background">
+                        {request.author.charAt(0)}
                     </div>
-                    <span className="text-[10px] text-muted-foreground">{request.author}</span>
                 </div>
-                <div className="flex items-center gap-2 text-[10px] text-muted-foreground font-medium">
-                    <span className="px-1.5 py-0.5 rounded bg-muted/10 border border-border">3</span>
+                <div className="text-[10px] font-bold text-muted bg-surface-container px-2 py-1 rounded-md">
+                    Oct 24
                 </div>
             </div>
         </div>
@@ -43,26 +48,30 @@ const KanbanCard = ({ request }: any) => {
 
 const KanbanColumn = ({ title, status, requests, icon: Icon, color }: any) => {
     return (
-        <div className="flex flex-col w-80 shrink-0 select-none">
-            <div className="flex items-center justify-between mb-4 px-2">
-                <div className="flex items-center gap-2">
-                    <div className={cn("p-1.5 rounded-lg bg-muted/10", color)}>
-                        <Icon className="w-4 h-4" />
+        <div className="flex flex-col min-w-[300px] w-[300px] xl:w-[340px] shrink-0 select-none">
+            <div className="flex items-center justify-between mb-6 pl-1">
+                <div className="flex items-center gap-2.5">
+                    <div className={cn("p-2 rounded-xl bg-surface-container-lowest shadow-sm", color.replace('text-', 'text-opacity-80 text-'))}>
+                        <Icon className={cn("w-4 h-4", color)} />
                     </div>
-                    <h3 className="text-sm font-bold tracking-wide uppercase">{title}</h3>
-                    <span className="ml-2 px-1.5 py-0.5 rounded-full bg-muted/10 border border-border text-[10px] font-mono text-muted-foreground">
-                        {requests.length}
-                    </span>
+                    <div className="flex flex-col">
+                        <h3 className="text-sm font-black tracking-tight text-foreground">{title}</h3>
+                        <span className="text-[10px] font-medium text-muted">{requests.length} requests</span>
+                    </div>
                 </div>
             </div>
-            <div className="flex-1 bg-muted/5 border border-border rounded-2xl p-3 overflow-y-auto no-scrollbar min-h-[500px]">
+
+            <div className="flex-1 overflow-y-auto no-scrollbar pb-10">
                 {requests.map((req: any) => (
                     <KanbanCard key={req.id} request={req} />
                 ))}
-                {status === 'Draft' && (
-                    <button className="w-full py-4 border-2 border-dashed border-border rounded-xl text-muted-foreground hover:border-foreground/10 hover:text-foreground transition-all flex flex-col items-center gap-1 group">
-                        <Plus className="w-5 h-5 group-hover:scale-110 transition-transform" />
-                        <span className="text-[10px] font-bold">新建分阶段需求</span>
+
+                {status === 'DRAFT' && (
+                    <button className="w-full py-4 border-2 border-dashed border-border/60 rounded-2xl text-muted hover:border-primary/30 hover:text-primary hover:bg-primary/5 transition-all flex flex-col items-center gap-2 group mb-4">
+                        <div className="w-8 h-8 rounded-full bg-surface-container flex items-center justify-center group-hover:bg-primary/10 transition-colors">
+                            <Plus className="w-4 h-4" />
+                        </div>
+                        <span className="text-xs font-bold">New Draft</span>
                     </button>
                 )}
             </div>
@@ -74,68 +83,64 @@ export const Workflows = () => {
     const { openModal } = useUI();
 
     const allRequests = [
-        { id: 'REQ-01', title: '2025Q1 支付环节漏斗治理', author: 'Alex', status: 'Reviewing' },
-        { id: 'REQ-02', title: '新年大促活动 - 首页会场埋点升级', author: 'Sarah', status: 'Approved' },
-        { id: 'REQ-03', title: '登录流失率专项：参数重命名', author: 'Mike', status: 'Applied' },
-        { id: 'REQ-04', title: '搜索结果面板 - 排序算法追踪', author: 'Lisa', status: 'Draft' },
-        { id: 'REQ-05', title: '购物车改版：新增智能凑单曝光', author: 'Alex', status: 'Draft' },
-        { id: 'REQ-06', title: '广告归因：支持 Deep Link 自动映射', author: 'Mike', status: 'Reviewing' },
+        { id: 'REQ-01', title: 'Payment Funnel Optimization', author: 'Alex', status: 'REVIEWING' },
+        { id: 'REQ-02', title: 'New Year Campaign Homepage Tracking', author: 'Sarah', status: 'APPROVED' },
+        { id: 'REQ-03', title: 'Login Drop-off Study: Parameter Renaming', author: 'Mike', status: 'APPLIED' },
+        { id: 'REQ-04', title: 'Search Result Ranking Algorithm Tracker', author: 'Lisa', status: 'DRAFT' },
+        { id: 'REQ-05', title: 'Shopping Cart: Smart Bundle Exposure', author: 'Alex', status: 'DRAFT' },
+        { id: 'REQ-06', title: 'Ad Attribution: Deep Link Auto-mapping', author: 'Mike', status: 'REVIEWING' },
     ];
 
     return (
-        <div className="flex-1 flex flex-col overflow-hidden bg-background">
+        <div className="flex-1 flex flex-col overflow-hidden bg-background animate-in fade-in duration-500">
             {/* Header */}
-            <div className="h-16 border-b border-border flex items-center justify-between px-8 bg-background/80 backdrop-blur-md z-10 shadow-sm sticky top-0">
-                <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-lg bg-indigo-500/20 flex items-center justify-center text-indigo-400 border border-indigo-500/20">
-                        <GitPullRequest className="w-4 h-4" />
-                    </div>
-                    <h2 className="text-xl font-bold tracking-tight">工作流中心</h2>
+            <div className="h-20 flex items-center justify-between px-8 bg-background z-10 shrink-0">
+                <div>
+                    <h2 className="text-2xl font-black tracking-tight flex items-center gap-3">
+                        Workflows
+                        <span className="text-sm font-medium text-muted bg-surface-container px-2 py-1 rounded-lg">Board</span>
+                    </h2>
                 </div>
                 <div className="flex items-center gap-4">
-                    <div className="flex rounded-lg bg-muted/10 p-1 border border-border">
-                        <button className="px-3 py-1 rounded-md bg-background text-xs font-semibold shadow-sm text-foreground">看板</button>
-                        <button className="px-3 py-1 rounded-md text-xs font-medium text-muted-foreground hover:text-foreground">列表</button>
-                    </div>
                     <button
                         onClick={() => openModal('NEW_REQUEST')}
-                        className="glass-button px-4 py-2 rounded-lg bg-primary text-white text-xs font-bold border-none flex items-center gap-2 shadow-[0_0_15px_rgba(59,130,246,0.3)]"
+                        className="btn-primary"
                     >
-                        <Plus className="w-3.5 h-3.5" />
-                        新建需求
+                        <Plus className="w-4 h-4" />
+                        <span>New Workflow</span>
                     </button>
                 </div>
             </div>
 
             {/* Kanban Board */}
-            <div className="flex-1 overflow-x-auto p-8 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-indigo-900/5 via-background to-background flex gap-8">
+            <div className="flex-1 overflow-x-auto px-8 pb-8 pt-2 flex gap-10">
                 <KanbanColumn
-                    title="草稿箱"
+                    title="Drafts"
                     status="Draft"
-                    requests={allRequests.filter(r => r.status === 'Draft')}
+                    requests={allRequests.filter(r => r.status === 'DRAFT')}
                     icon={FileDiff}
-                    color="text-orange-400"
+                    color="text-orange-500"
                 />
                 <KanbanColumn
-                    title="审批中"
+                    title="In Review"
                     status="Reviewing"
-                    requests={allRequests.filter(r => r.status === 'Reviewing')}
+                    requests={allRequests.filter(r => r.status === 'REVIEWING')}
                     icon={Clock}
-                    color="text-blue-400"
+                    color="text-blue-500"
                 />
                 <KanbanColumn
-                    title="已通过"
+                    title="Approved"
                     status="Approved"
-                    requests={allRequests.filter(r => r.status === 'Approved')}
+                    requests={allRequests.filter(r => r.status === 'APPROVED')}
                     icon={CheckCircle2}
-                    color="text-green-400"
+                    color="text-green-500"
                 />
                 <KanbanColumn
-                    title="已发布"
+                    title="Deployed"
                     status="Applied"
-                    requests={allRequests.filter(r => r.status === 'Applied')}
+                    requests={allRequests.filter(r => r.status === 'APPLIED')}
                     icon={GitPullRequest}
-                    color="text-purple-400"
+                    color="text-purple-500"
                 />
             </div>
         </div>

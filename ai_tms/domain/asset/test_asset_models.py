@@ -1,15 +1,15 @@
 import unittest
-from ai_tms.domain.asset.models import Event, EventType, Property
+from ai_tms.domain.asset.models import Event, EventType, Parameter
 
 class TestAssetModels(unittest.TestCase):
     
     def test_event_locking_mechanism(self):
         """验证 Event 领域模型的互斥锁逻辑"""
-        event = Event(id="EVT_1", tenant_id="T1", group_id="G1", name="test_evt", status="Online")
+        event = Event(id="EVT_1", tenant_id="T1", group_id="G1", name="test_evt", status="ONLINE")
         
         # 1. 正常锁定
         event.lock("REQ_A")
-        self.assertEqual(event.status, "Editing")
+        self.assertEqual(event.status, "EDITING")
         self.assertEqual(event.locked_by_request, "REQ_A")
         
         # 2. 重复锁定（同一个请求）- 应当允许或忽略，目前实现是允许且无副作用
@@ -21,7 +21,7 @@ class TestAssetModels(unittest.TestCase):
             
         # 4. 解锁
         event.unlock()
-        self.assertEqual(event.status, "Online")
+        self.assertEqual(event.status, "ONLINE")
         self.assertIsNone(event.locked_by_request)
 
     def test_event_semantic_validation(self):

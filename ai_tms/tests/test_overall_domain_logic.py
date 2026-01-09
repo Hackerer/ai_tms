@@ -29,7 +29,7 @@ class TestOverallDomainLogic(unittest.TestCase):
         
         # Aggregate: Event (Initial State)
         event = Event(id="EVT_1", tenant_id="T1", group_id=group.id, name="cart_pv", page_id=page.id, event_type=EventType.PV)
-        self.assertEqual(event.status, "Online")
+        self.assertEqual(event.status, "ONLINE")
         
         # --- PHASE 3: Workflow Execution ---
         
@@ -51,7 +51,7 @@ class TestOverallDomainLogic(unittest.TestCase):
         
         # 3. 提交 (State Transition)
         req.submit(bob.id)
-        self.assertEqual(req.status, "Reviewing")
+        self.assertEqual(req.status, "REVIEWING")
         # Verify Log
         self.assertEqual(req.history_logs[-1].action, "Submit")
         self.assertEqual(req.history_logs[-1].user_id, bob.id)
@@ -66,7 +66,7 @@ class TestOverallDomainLogic(unittest.TestCase):
         
         # 1. 锁定资产 (Asset Domain Logic)
         event.lock(req.id)
-        self.assertEqual(event.status, "Editing")
+        self.assertEqual(event.status, "EDITING")
         self.assertEqual(event.locked_by_request, req.id)
         
         # 2. 更新资产内容 (Asset Domain Logic)
@@ -83,7 +83,7 @@ class TestOverallDomainLogic(unittest.TestCase):
         
         # 3. 标记单据完成 (Workflow Domain Logic)
         req.mark_applied("SYSTEM")
-        self.assertEqual(req.status, "Applied")
+        self.assertEqual(req.status, "APPLIED")
         # Verify Final Log Preservation
         self.assertEqual(req.history_logs[-1].action, "Applied")
         self.assertIn("所有变更已同步", req.history_logs[-1].message)

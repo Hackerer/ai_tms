@@ -1,3 +1,5 @@
+import { useState, Fragment } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import {
     ArrowLeft,
     Save,
@@ -12,16 +14,18 @@ import {
     Copy,
     LayoutList,
     Grid3X3,
+    LayoutGrid,
     Eye
 } from 'lucide-react';
+import { EventCard } from '../components/EventCard';
+import { EventScreenshot } from '../components/EventScreenshot';
 import { cn } from '../lib/utils';
-import { useState, Fragment } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
 import { useUI } from '../context/UIContext';
 import { EventDiffModal } from '../components/modals/EventDiffModal';
 import { useWorkbench } from '../hooks/useWorkbench';
 import type { EventChange, WorkflowParameter as Parameter } from '../types/workflow';
 import { AssetLibrarySidebar } from '../components/AssetLibrarySidebar';
+import { AssetCombobox } from '../components/AssetCombobox';
 import { SubmitConfirmModal } from '../components/modals/SubmitConfirmModal';
 import { BatchAddParameterModal } from '../components/modals/BatchAddParameterModal';
 import { ParameterFinderModal } from '../components/modals/ParameterFinderModal';
@@ -29,6 +33,7 @@ import { NewParameterModal } from '../components/modals/NewParameterModal';
 import { ParameterTable } from '../components/ParameterTable';
 import { EventGrid } from '../components/EventGrid';
 import { FeatureIcon } from '../components/FeatureIcon';
+import { WorkflowSteps } from '../components/WorkflowSteps';
 
 
 // --- Main Workbench Component ---
@@ -41,7 +46,6 @@ export const Workbench = () => {
     // 使用工作台 Hook 管理状态和业务逻辑
     const {
         request,
-        lastSaved,
         isReadOnly,
         conflictInfo,
         canSubmit,
@@ -61,7 +65,8 @@ export const Workbench = () => {
     } = useWorkbench(id || '');
 
     // UI 状态
-    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+    const [isComboboxOpen, setIsComboboxOpen] = useState(false);
+    const [searchQuery, setSearchQuery] = useState(''); // 搜索关键词
     const [isSubmitModalOpen, setIsSubmitModalOpen] = useState(false);
     const [isBatchParamModalOpen, setIsBatchParamModalOpen] = useState(false);
     const [isDiffModalOpen, setIsDiffModalOpen] = useState(false);
@@ -93,7 +98,6 @@ export const Workbench = () => {
     // 事件处理器
     const handleAssetSelect = (asset: any) => {
         const newChange = addEventFromAsset(asset);
-        setIsSidebarOpen(false);
         showToast(`已添加 ${newChange.name} 到变更集`, 'success');
     };
 
@@ -204,101 +208,126 @@ export const Workbench = () => {
     };
 
     return (
-        <div className="flex-1 flex flex-col overflow-hidden bg-background">
-            {/* Header - Fixed & Glass - MD3 Standard */}
-            <div className="h-18 border-b-0 flex items-center justify-between px-6 bg-background/80 backdrop-blur-md sticky top-0 z-30 transition-all shadow-sm">
-                <div className="flex items-center gap-4">
+        <div className="flex-1 flex flex-col overflow-hidden bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-blue-900/20 via-background to-background">
+            {/* Header */}
+            {/* Top Navigation & Breadcrumbs */}
+            <div className="h-14 border-b border-border bg-muted/5 backdrop-blur-sm flex items-center justify-between px-4 lg:px-6 shrink-0 gap-2">
+                {/* 左侧：返回按钮 + 标题（可截断） */}
+                <div className="flex items-center gap-2 lg:gap-4 min-w-0 shrink-0">
                     <button
                         onClick={() => navigate('/workflows')}
-                        className="p-3 hover:bg-muted/10 rounded-full text-muted-foreground hover:text-foreground transition-colors group"
+                        className="p-2 -ml-2 hover:bg-muted/10 rounded-lg text-muted-foreground hover:text-foreground transition-colors shrink-0"
                     >
-                        <ArrowLeft className="w-6 h-6 group-hover:-translate-x-1 transition-transform" />
+                        <ArrowLeft className="w-4 h-4" />
                     </button>
-                    <div className="flex flex-col">
-                        <div className="flex items-center gap-3">
-                            <h2 className="text-xl font-bold tracking-tight text-foreground line-clamp-1">{request.title}</h2>
-                            <span className={cn(
-                                "px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-widest border uppercase",
-                                request.status === 'Draft' ? "bg-orange-500/10 text-orange-600 border-orange-500/20" :
-                                    request.status === 'Reviewing' ? "bg-blue-500/10 text-blue-600 border-blue-500/20" :
-                                        request.status === 'Approved' ? "bg-green-500/10 text-green-600 border-green-500/20" :
-                                            "bg-red-500/10 text-red-600 border-red-500/20"
-                            )}>
-                                {request.status}
+                    <div className="flex flex-col min-w-0">
+                        <div className="flex items-center gap-2 min-w-0">
+                            <span className="font-bold text-sm text-foreground truncate max-w-[120px] lg:max-w-[200px] xl:max-w-none">{request.title}</span>
+                            <span className="px-1.5 py-0.5 rounded bg-muted/5 text-muted-foreground text-[10px] font-mono border border-border shrink-0">
+                                {request.id}
                             </span>
                         </div>
-                        <p className="text-xs text-muted-foreground font-mono mt-0.5 uppercase tracking-wide opacity-70">
-                            REQ #{request.id} • Alex Chen
-                        </p>
                     </div>
                 </div>
 
-                <div className="flex items-center gap-3">
-                    <div className="flex bg-muted/10 rounded-lg p-1 border border-border mr-2 items-center">
-                        <button
-                            onClick={() => setViewMode('list')}
-                            className={cn(
-                                "p-1.5 rounded-md transition-all flex items-center gap-2 px-2",
-                                viewMode === 'list' ? "bg-background text-foreground shadow-sm ring-1 ring-border" : "text-muted-foreground hover:text-foreground"
-                            )}
-                        >
-                            <LayoutList className="w-3.5 h-3.5" />
-                            <span className="text-xs font-medium">List</span>
-                        </button>
-                        <button
-                            onClick={() => setViewMode('grid')}
-                            className={cn(
-                                "p-1.5 rounded-md transition-all flex items-center gap-2 px-2",
-                                viewMode === 'grid' ? "bg-background text-foreground shadow-sm ring-1 ring-border" : "text-muted-foreground hover:text-foreground"
-                            )}
-                        >
-                            <Grid3X3 className="w-3.5 h-3.5" />
-                            <span className="text-xs font-medium">Grid</span>
-                        </button>
-                    </div>
+                {/* 中部：WorkflowSteps（响应式显示/隐藏） */}
+                <div className="hidden lg:flex flex-1 justify-center max-w-md xl:max-w-2xl mx-2 xl:mx-8 min-w-0">
+                    <WorkflowSteps currentStatus={request.status} />
+                </div>
 
+                {/* 右侧：按钮组 */}
+                <div className="flex items-center gap-2 lg:gap-3 shrink-0">
+
+                    {/* 操作按钮 */}
                     {!isReadOnly && (
                         <>
                             <button
                                 onClick={handleSaveDraft}
-                                className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-border bg-background hover:bg-muted/5 text-xs font-bold text-foreground transition-all shadow-sm"
+                                className="px-2 lg:px-3 py-1.5 rounded-md border border-border bg-muted/5 text-xs font-medium text-foreground hover:bg-muted/10 transition-colors flex items-center gap-1.5 shadow-sm"
                             >
-                                <Save className="w-3.5 h-3.5 text-muted-foreground" />
-                                Save Draft
-                                {lastSaved && <span className="text-[9px] font-normal opacity-70 ml-1">{lastSaved}</span>}
+                                <Save className="w-3.5 h-3.5" />
+                                <span className="hidden lg:inline">保存</span>
                             </button>
                             <button
                                 onClick={handleSubmit}
-                                className="flex items-center gap-2 px-4 py-1.5 rounded-lg bg-primary text-primary-foreground text-xs font-bold shadow-md hover:brightness-110 active:scale-95 transition-all"
+                                className="px-2 lg:px-3 py-1.5 rounded-md bg-blue-600/90 text-white text-xs font-medium hover:bg-blue-600 transition-colors flex items-center gap-1.5 shadow-sm"
                             >
                                 <Send className="w-3.5 h-3.5" />
-                                Submit
+                                <span className="hidden lg:inline">提交</span>
                             </button>
                         </>
                     )}
                 </div>
             </div>
 
-            {/* Toolbar - Sticky below header */}
+            {/* Toolbar */}
             {!isReadOnly && (
-                <div className="px-6 py-4 bg-background/50 border-b border-border flex items-center justify-between sticky top-16 z-20 backdrop-blur-sm">
+                <div className="px-6 py-4 bg-surface-container border-b border-border flex items-center justify-between sticky top-14 z-50">{/* z-50确保在backdrop(z-40)之上 */}
                     <div className="flex items-center gap-3 flex-1 max-w-3xl">
                         <div className="relative flex-1 group">
-                            <SearchCode className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
-                            <button
-                                onClick={() => setIsSidebarOpen(true)}
-                                className="w-full bg-muted/10 border border-border rounded-xl pl-10 pr-4 py-2.5 text-sm text-left text-muted-foreground hover:bg-background hover:shadow-sm hover:border-primary/30 transition-all flex items-center justify-between"
-                            >
-                                <span>搜索资产库以检索现有埋点进行修改 (EDIT)...</span>
-                                <span className="text-xs bg-muted/20 px-1.5 py-0.5 rounded border border-border">⌘+K</span>
-                            </button>
+                            <SearchCode className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground group-focus-within:text-primary transition-colors z-10" />
+                            <input
+                                type="text"
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                                onFocus={() => setIsComboboxOpen(true)}
+                                placeholder="搜索资产库添加已有埋点..."
+                                className="w-full bg-surface-container-high border border-border rounded-xl pl-10 pr-20 py-2 text-sm text-left text-foreground placeholder:text-muted-foreground hover:bg-surface-container-highest transition-all focus:outline-none focus:ring-2 focus:ring-primary/20"
+                            />
+                            <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] bg-surface-container px-1.5 py-0.5 rounded border border-border text-muted-foreground pointer-events-none">
+                                添加已有
+                            </span>
+                            {/* AssetCombobox - 紧贴input下方 */}
+                            <AssetCombobox
+                                open={isComboboxOpen}
+                                onOpenChange={(open) => {
+                                    setIsComboboxOpen(open);
+                                    if (!open) setSearchQuery(''); // 关闭时清空
+                                }}
+                                onSelect={(assets) => {
+                                    assets.forEach(asset => addEventFromAsset(asset));
+                                    showToast(`成功添加 ${assets.length} 个埋点`, 'success');
+                                }}
+                                searchQuery={searchQuery}
+                                onSearchChange={setSearchQuery}
+                                availableAssets={[
+                                    { id: 'EVT-10023', name: 'hot_sale_click', type: 'Click', page: '热销看板', params: 5 },
+                                    { id: 'EVT-10024', name: 'banner_show', type: 'Exposure', page: '热销看板', params: 3 },
+                                    { id: 'EVT-10027', name: 'cart_add_click', type: 'Click', page: '购物车', params: 4 },
+                                    { id: 'EVT-10028', name: 'cart_checkout_click', type: 'Click', page: '购物车', params: 6 },
+                                ]}
+                            />
                         </div>
                         <button
                             onClick={handleDirectCreate}
-                            className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-primary/10 border border-primary/20 text-primary text-xs font-bold hover:bg-primary/20 transition-all shrink-0 active:scale-95"
+                            className="flex items-center gap-2 px-4 py-2 rounded-xl bg-blue-600/90 border border-blue-600/50 text-white text-xs font-bold hover:bg-blue-600 transition-all shrink-0 active:scale-95 shadow-sm"
                         >
                             <Plus className="w-4 h-4" />
-                            直接新建 (NEW)
+                            注册新埋点
+                        </button>
+                    </div>
+
+                    {/* 视图切换按钮 */}
+                    <div className="flex bg-muted/5 rounded-lg p-1 border border-border items-center">
+                        <button
+                            onClick={() => setViewMode('list')}
+                            className={cn(
+                                "p-1.5 rounded-md transition-all flex items-center gap-1.5 px-2",
+                                viewMode === 'list' ? "bg-surface-container text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"
+                            )}
+                        >
+                            <LayoutList className="w-3.5 h-3.5" />
+                            <span className="text-xs font-medium hidden xl:inline">列表</span>
+                        </button>
+                        <button
+                            onClick={() => setViewMode('grid')}
+                            className={cn(
+                                "p-1.5 rounded-md transition-all flex items-center gap-1.5 px-2",
+                                viewMode === 'grid' ? "bg-surface-container text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"
+                            )}
+                        >
+                            <Grid3X3 className="w-3.5 h-3.5" />
+                            <span className="text-xs font-medium hidden xl:inline">概览</span>
                         </button>
                     </div>
                 </div>
@@ -306,7 +335,7 @@ export const Workbench = () => {
 
             {/* Content Area */}
             <div className="flex-1 overflow-auto p-6 bg-muted/5">
-                <div className="max-w-7xl mx-auto space-y-6">
+                <div className="mx-auto w-full max-w-[1366px] xl:max-w-[1440px] 2xl:max-w-[1720px] space-y-6">
                     {/* Error Alert */}
                     {hasConflicts && (
                         <div className="rounded-xl border border-red-500/20 bg-red-500/10 p-4 flex items-center gap-3 animate-in fade-in slide-in-from-top-2">
@@ -321,18 +350,19 @@ export const Workbench = () => {
                     )}
 
                     {viewMode === 'list' ? (
-                        <div className="bg-background rounded-2xl border border-border shadow-sm overflow-hidden">
+                        <div className="card-standard p-0 overflow-hidden">
                             <table className="w-full text-left">
                                 <thead>
-                                    <tr className="bg-muted/10 border-b border-border">
-                                        <th className="w-12 py-3"></th>
-                                        <th className="px-6 py-3 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Status</th>
-                                        <th className="px-6 py-3 text-[10px] font-bold uppercase tracking-wider text-muted-foreground w-1/4">Event Code</th>
-                                        <th className="px-6 py-3 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Description</th>
-                                        <th className="px-6 py-3 text-[10px] font-bold uppercase tracking-wider text-muted-foreground text-right w-32">Actions</th>
+                                    <tr className="border-b border-border/50">
+                                        <th className="w-12 py-4"></th>
+                                        <th className="px-6 py-4 text-label">Status</th>
+                                        <th className="px-6 py-4 text-label w-20">截图</th>
+                                        <th className="px-6 py-4 text-label w-1/4">Event Code</th>
+                                        <th className="px-6 py-4 text-label">Description</th>
+                                        <th className="px-6 py-4 text-label text-right w-32">Actions</th>
                                     </tr>
                                 </thead>
-                                <tbody className="divide-y divide-border/50">
+                                <tbody className="divide-y divide-border/30">
                                     {request.event_references.map((change, idx) => (
                                         <Fragment key={change.id}>
                                             <tr
@@ -357,6 +387,16 @@ export const Workbench = () => {
                                                     <span className={cn("text-[10px] font-bold px-2 py-0.5 rounded border tracking-tighter inline-block mt-1.5", statusMap[change.operation].color)}>
                                                         {statusMap[change.operation].label}
                                                     </span>
+                                                </td>
+                                                <td className="px-6 py-4 align-top">
+                                                    <EventScreenshot
+                                                        url={change.screenshot_url || null}
+                                                        eventId={change.id}
+                                                        size="small"
+                                                        editable={!isReadOnly}
+                                                        onUpload={(url) => updateEventField(idx, 'screenshot_url', url)}
+                                                        onDelete={() => updateEventField(idx, 'screenshot_url', null)}
+                                                    />
                                                 </td>
                                                 <td className="px-6 py-4 align-top">
                                                     <div className="flex flex-col gap-1">
@@ -473,7 +513,7 @@ export const Workbench = () => {
                             {!isReadOnly && request.event_references.length > 0 && (
                                 <div className="p-3 bg-muted/5 border-t border-border flex items-center justify-center">
                                     <button
-                                        onClick={() => setIsSidebarOpen(true)}
+                                        onClick={() => setIsComboboxOpen(true)}
                                         className="w-full py-2 border border-dashed border-border rounded-lg text-xs font-bold text-muted-foreground hover:text-primary hover:border-primary/30 hover:bg-primary/5 transition-all flex items-center justify-center gap-2"
                                     >
                                         <Plus className="w-4 h-4" />
@@ -482,7 +522,63 @@ export const Workbench = () => {
                                 </div>
                             )}
                         </div>
+                    ) : viewMode === 'grid' ? (
+                        /* Grid视图：卡片布局 */
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                            {request.event_references.length > 0 ? (
+                                request.event_references.map((event, idx) => (
+                                    <EventCard
+                                        key={event.id}
+                                        event={event}
+                                        eventIndex={idx}
+                                        isReadOnly={isReadOnly}
+                                        onUpdate={updateEventField}
+                                        onCopy={handleCopyEvent}
+                                        onDelete={handleDeleteEvent}
+                                        onViewDiff={(evt) => {
+                                            setSelectedEventForDiff(evt);
+                                            setIsDiffModalOpen(true);
+                                        }}
+                                        onClick={() => toggleExpand(idx)}
+                                    />
+                                ))
+                            ) : (
+                                <div className="col-span-full flex flex-col items-center justify-center py-16">
+                                    <LayoutGrid className="w-12 h-12 text-muted-foreground/50 mb-4" />
+                                    <p className="text-muted-foreground font-medium">暂无变更事件</p>
+                                    <p className="text-xs text-muted-foreground mt-1 mb-4">搜索资产库添加已有埋点，或直接新建埋点。</p>
+                                    <button
+                                        onClick={handleDirectCreate}
+                                        className="px-4 py-2 bg-primary text-primary-foreground text-xs font-bold rounded-lg hover:brightness-110"
+                                    >
+                                        立即新建
+                                    </button>
+                                </div>
+                            )}
+                            {!isReadOnly && request.event_references.length > 0 && (
+                                <div className="card-standard p-0 border-2 border-dashed border-border overflow-hidden flex flex-col">
+                                    {/* 上方：注册新埋点 */}
+                                    <button
+                                        onClick={handleDirectCreate}
+                                        className="flex-1 p-6 hover:bg-primary/5 transition-all flex flex-col items-center justify-center gap-2 text-muted-foreground hover:text-primary group cursor-pointer border-b border-dashed border-border"
+                                    >
+                                        <Plus className="w-6 h-6 opacity-50 group-hover:opacity-100 transition-opacity" />
+                                        <span className="text-sm font-medium">注册新埋点</span>
+                                    </button>
+
+                                    {/* 下方：添加已有事件 */}
+                                    <button
+                                        onClick={() => setIsComboboxOpen(true)}
+                                        className="flex-1 p-6 hover:bg-primary/5 transition-all flex flex-col items-center justify-center gap-2 text-muted-foreground hover:text-primary group cursor-pointer"
+                                    >
+                                        <SearchCode className="w-6 h-6 opacity-50 group-hover:opacity-100 transition-opacity" />
+                                        <span className="text-sm font-medium">添加已有事件</span>
+                                    </button>
+                                </div>
+                            )}
+                        </div>
                     ) : (
+                        /* Table视图：EventGrid表格 */
                         <EventGrid
                             data={request.event_references}
                             onUpdate={updateEventField}
@@ -548,11 +644,6 @@ export const Workbench = () => {
             )}
 
             {/* Modals */}
-            <AssetLibrarySidebar
-                isOpen={isSidebarOpen}
-                onClose={() => setIsSidebarOpen(false)}
-                onSelect={handleAssetSelect}
-            />
             <SubmitConfirmModal
                 isOpen={isSubmitModalOpen}
                 onClose={() => setIsSubmitModalOpen(false)}

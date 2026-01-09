@@ -158,7 +158,7 @@ export const PageManagement = () => {
                         <div className="w-8 h-8 border-4 border-primary/20 border-t-primary rounded-full animate-spin" />
                     </div>
                 ) : (
-                    <div className="glass-card p-6 rounded-2xl border-border shadow-sm">
+                    <div className="card-standard p-6">
                         <div className="flex items-center gap-3 mb-6 pb-4 border-b border-border/50">
                             <FeatureIcon icon={Globe} variant="primary" className="w-8 h-8 rounded-lg" scale={0.8} />
                             <div>
@@ -182,15 +182,21 @@ export const PageManagement = () => {
 
             {/* 右侧详情面板 */}
             {selectedPage ? (
-                <div className="w-96 border-l border-border bg-background/50 p-8 overflow-auto backdrop-blur-sm shadow-xl z-10 transition-all">
-                    <div className="mb-8">
-                        <FeatureIcon icon={FileText} variant="primary" className="w-12 h-12 rounded-xl mb-4" />
-                        <h3 className="text-xl font-bold mb-1 text-foreground leading-tight">{selectedPage.name}</h3>
-                        <p className="text-xs text-muted-foreground font-mono uppercase tracking-wider">{selectedPage.id}</p>
+                <div className="w-80 xl:w-96 2xl:w-[420px] border-l border-border bg-background/50 p-6 xl:p-8 overflow-auto backdrop-blur-sm shadow-xl z-10 transition-all shrink-0">
+                    <div className="flex items-center gap-4 mb-8">
+                        <FeatureIcon icon={FileText} variant="primary" className="w-12 h-12 rounded-xl shrink-0" />
+                        <div className="min-w-0">
+                            <h3 className="text-xl font-bold text-foreground leading-tight truncate" title={selectedPage.name}>
+                                {selectedPage.name}
+                            </h3>
+                            <p className="text-xs text-muted-foreground font-mono uppercase tracking-wider opacity-60">
+                                {selectedPage.id}
+                            </p>
+                        </div>
                     </div>
 
                     <div className="space-y-6">
-                        <div className="glass-card p-5 rounded-xl border-border shadow-sm">
+                        <div className="card-standard p-5">
                             <h4 className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-4 flex items-center gap-2">
                                 <div className="w-1 h-3 bg-primary rounded-full" />
                                 基本信息
@@ -217,7 +223,7 @@ export const PageManagement = () => {
                             </div>
                         </div>
 
-                        <div className="glass-card p-5 rounded-xl border-border shadow-sm">
+                        <div className="card-standard p-5">
                             <h4 className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-4 flex items-center gap-2">
                                 <div className="w-1 h-3 bg-green-500 rounded-full" />
                                 统计数据
@@ -257,7 +263,7 @@ export const PageManagement = () => {
                     </div>
                 </div>
             ) : (
-                <div className="w-96 border-l border-border bg-background/50 p-6 flex items-center justify-center backdrop-blur-sm">
+                <div className="w-80 xl:w-96 2xl:w-[420px] border-l border-border bg-background/50 p-6 flex items-center justify-center backdrop-blur-sm shrink-0">
                     <div className="text-center">
                         <FeatureIcon icon={FolderTree} className="w-20 h-20 mx-auto mb-6 opacity-80" variant="primary" scale={1.2} />
                         <h3 className="text-lg font-bold text-foreground">No Selection</h3>

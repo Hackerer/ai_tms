@@ -14,7 +14,7 @@ export const useWorkbench = (requestId: string) => {
     const [request, setRequest] = useState<TrackingRequest>({
         id: requestId || 'REQ-001',
         title: '2025Q1 支付环节漏斗治理',
-        status: 'Draft',
+        status: 'DRAFT',
         created_user_id: 'USER-001',
         doc_url: '',
         event_references: [
@@ -24,6 +24,7 @@ export const useWorkbench = (requestId: string) => {
                 operation: 'edit',
                 description: '购物车添加按钮点击，需增加优惠券核销字段',
                 isExpanded: true,
+                screenshot_url: '/screenshots/mock_event_screenshot_2_1767337029453.png',
                 parameters: [
                     { key: 'item_id', type: 'String', desc: '商品唯一ID', isRequired: true },
                     { key: 'coupon_code', type: 'String', desc: '核销券码', isRequired: false },
@@ -36,6 +37,7 @@ export const useWorkbench = (requestId: string) => {
                 operation: 'create',
                 description: '首页智能瀑布流曝光统计',
                 isExpanded: false,
+                screenshot_url: '/screenshots/mock_event_screenshot_1_1767337009085.png',
                 parameters: [
                     { key: 'pos_id', type: 'Number', desc: '展示坑位', isRequired: true },
                     { key: 'rec_id', type: 'String', desc: '算法推荐引擎ID', isRequired: true }
@@ -79,7 +81,7 @@ export const useWorkbench = (requestId: string) => {
 
     /** 是否为只读模式 */
     const isReadOnly = useMemo(() => {
-        return request.status !== 'Draft' && request.status !== 'Rejected';
+        return request.status !== 'DRAFT' && request.status !== 'REJECTED';
     }, [request.status]);
 
     /** 冲突检测：检查是否有重复事件名 */
@@ -290,7 +292,7 @@ export const useWorkbench = (requestId: string) => {
         try {
             const result = await workflowService.submitForReview(request.id);
             if (result.success) {
-                setRequest(prev => ({ ...prev, status: 'Reviewing' }));
+                setRequest(prev => ({ ...prev, status: 'REVIEWING' }));
             }
             return result.success;
         } catch (error) {

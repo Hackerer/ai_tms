@@ -1,4 +1,4 @@
-export type ParameterType = 'String' | 'Number' | 'Boolean' | 'Object' | 'Array';
+export type ParameterType = 'STRING' | 'NUMBER' | 'BOOLEAN' | 'OBJECT' | 'ARRAY';
 export type AssetCategory = 'global' | 'domain' | 'app';
 
 export interface Parameter {
@@ -20,7 +20,7 @@ export interface Event {
     type: string;
     page_id: string;
     description: string;
-    status: 'Online' | 'Reviewing' | 'Offline';
+    status: 'ONLINE' | 'REVIEWING' | 'OFFLINE';
     params_count: number;
     properties?: Parameter[];
 }

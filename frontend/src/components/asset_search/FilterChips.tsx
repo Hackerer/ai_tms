@@ -38,14 +38,14 @@ export const FilterChips = ({ filters, configs, onRemove }: FilterChipsProps) =>
                 return (
                     <div
                         key={key}
-                        className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-primary/10 border border-primary/20 text-xs font-medium text-primary animate-in fade-in zoom-in duration-200"
+                        className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-surface-container text-xs font-medium text-foreground border border-transparent hover:bg-surface-container-high transition-colors animate-in fade-in zoom-in duration-200"
                     >
-                        {Icon && <Icon className="w-3 h-3 opacity-70" />}
-                        <span className="opacity-70">{config.label}:</span>
-                        <span className="font-bold">{displayValue}</span>
+                        {Icon && <Icon className="w-3 h-3 text-foreground-secondary" />}
+                        <span className="text-foreground-secondary">{config.label}:</span>
+                        <span className="font-semibold text-foreground">{displayValue}</span>
                         <button
                             onClick={() => onRemove(key)}
-                            className="ml-1 hover:bg-primary/20 rounded-full p-0.5 transition-colors"
+                            className="ml-1 rounded-full p-0.5 hover:bg-black/5 transition-colors text-foreground-secondary hover:text-foreground"
                         >
                             <X className="w-3 h-3" />
                         </button>

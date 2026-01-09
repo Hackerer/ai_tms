@@ -2,7 +2,7 @@ import sqlite3
 import uuid
 import json
 from typing import Optional, List, Dict
-from ai_tms.domain.workflow.models import TrackingRequest, ApprovalNode, EventVersion, HistoryLog, EventRef
+from ai_tms.domain.workflow.models import TrackingRequest, ApprovalNode, EventVersion, HistoryLog, EventChange
 from ai_tms.domain.workflow.repositories import IWorkflowRepository
 
 class SqliteWorkflowRepository(IWorkflowRepository):
@@ -112,7 +112,7 @@ class SqliteWorkflowRepository(IWorkflowRepository):
             history_logs = [HistoryLog(l['user_id'], l['action'], l['message'], l['timestamp']) for l in logs_data]
             
             refs_data = json.loads(row['event_references']) if row['event_references'] else []
-            event_refs = [EventRef(r['event_id'], r['operation'], r['event_data']) for r in refs_data]
+            event_refs = [EventChange(r['event_id'], r['operation'], r['event_data']) for r in refs_data]
             
             return TrackingRequest(
                 id=row['id'], title=row['title'], tenant_id=row['tenant_id'], group_id=row['group_id'], 
@@ -134,7 +134,29 @@ class SqliteWorkflowRepository(IWorkflowRepository):
                 history_logs = [HistoryLog(l['user_id'], l['action'], l['message'], l['timestamp']) for l in logs_data]
                 
                 refs_data = json.loads(row['event_references']) if row['event_references'] else []
-                event_refs = [EventRef(r['event_id'], r['operation'], r['event_data']) for r in refs_data]
+                event_refs = [EventChange(r['event_id'], r['operation'], r['event_data']) for r in refs_data]
+                
+                requests.append(TrackingRequest(
+                    id=row['id'], title=row['title'], tenant_id=row['tenant_id'], group_id=row['group_id'], 
+                    created_user_id=row['created_user_id'], status=row['status'], created_at=row['created_at'],
+                    event_references=event_refs, history_logs=history_logs, doc_url=row['doc_url']
+                ))
+            return requests
+        finally:
+            conn.close()
+    def get_all_requests(self) -> List[TrackingRequest]:
+        """获取系统内所有需求单"""
+        conn = self._get_conn()
+        try:
+            cursor = conn.cursor()
+            cursor.execute("SELECT * FROM tracking_requests ORDER BY created_at DESC")
+            requests = []
+            for row in cursor.fetchall():
+                logs_data = json.loads(row['history_logs']) if row['history_logs'] else []
+                history_logs = [HistoryLog(l['user_id'], l['action'], l['message'], l['timestamp']) for l in logs_data]
+                
+                refs_data = json.loads(row['event_references']) if row['event_references'] else []
+                event_refs = [EventChange(r['event_id'], r['operation'], r['event_data']) for r in refs_data]
                 
                 requests.append(TrackingRequest(
                     id=row['id'], title=row['title'], tenant_id=row['tenant_id'], group_id=row['group_id'], 

@@ -30,7 +30,7 @@ const BasicInfoTab = ({ params, paramSearch, setParamSearch }: any) => {
     return (
         <div className="space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-500">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="glass-card p-6 rounded-2xl border-border">
+                <div className="card-standard p-6">
                     <h4 className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-4 flex items-center gap-2">
                         <Info className="w-3.5 h-3.5 text-primary" />
                         核心元数据
@@ -61,7 +61,7 @@ const BasicInfoTab = ({ params, paramSearch, setParamSearch }: any) => {
                     </div>
                 </div>
 
-                <div className="glass-card p-6 rounded-2xl border-border">
+                <div className="card-standard p-6">
                     <h4 className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-4 flex items-center gap-2">
                         <DatabaseZap className="w-3.5 h-3.5 text-primary" />
                         上报约束
@@ -83,7 +83,7 @@ const BasicInfoTab = ({ params, paramSearch, setParamSearch }: any) => {
                 </div>
             </div>
 
-            <div className="glass-card rounded-2xl border-border overflow-hidden">
+            <div className="card-standard overflow-hidden">
                 <div className="px-6 py-4 border-b border-border bg-white/[0.02] flex justify-between items-center">
                     <h4 className="text-xs font-bold text-muted-foreground uppercase tracking-widest flex items-center gap-2">
                         <Layers className="w-3.5 h-3.5 text-primary" />
@@ -154,7 +154,7 @@ const ChangeLogsTab = () => (
                 )}>
                     {log.type === 'NEW' ? <Plus className="w-3 h-3 text-white" /> : <Clock className="w-3 h-3 text-white" />}
                 </div>
-                <div className="glass-card p-5 rounded-2xl border-border hover:border-primary/20 transition-all">
+                <div className="card-standard p-5 hover:border-primary/20 transition-all">
                     <div className="flex justify-between items-start mb-2">
                         <div className="flex items-center gap-3">
                             <span className="text-sm font-bold tracking-tight">{log.ver}</span>
@@ -190,7 +190,7 @@ LIMIT 100;`;
 
     return (
         <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-500">
-            <div className="glass-card rounded-2xl overflow-hidden border-border">
+            <div className="card-standard overflow-hidden">
                 <div className="px-6 py-4 border-b border-border bg-white/[0.02] flex justify-between items-center">
                     <div className="flex items-center gap-2">
                         <Database className="w-4 h-4 text-primary" />
@@ -262,7 +262,7 @@ Nexus.track("cart_add_click", mapOf(
                 ))}
             </div>
 
-            <div className="glass-card rounded-2xl overflow-hidden border-border">
+            <div className="card-standard overflow-hidden">
                 <div className="px-6 py-4 border-b border-border bg-white/[0.02] flex justify-between items-center">
                     <div className="flex items-center gap-2">
                         <Code className="w-4 h-4 text-primary" />

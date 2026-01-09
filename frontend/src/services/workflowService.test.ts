@@ -24,8 +24,8 @@ describe('workflowService', () => {
         });
 
         it('should filter by status', async () => {
-            const result = await workflowService.getTrackingRequests('Draft');
-            expect(result.every(r => r.status === 'Draft')).toBe(true);
+            const result = await workflowService.getTrackingRequests('DRAFT');
+            expect(result.every(r => r.status === 'DRAFT')).toBe(true);
         });
     });
 
@@ -34,7 +34,7 @@ describe('workflowService', () => {
             const mockRequest = {
                 id: 'REQ-TEST',
                 title: 'Test Request',
-                status: 'Draft' as const,
+                status: 'DRAFT' as const,
                 created_user_id: 'USER-001',
                 doc_url: '',
                 event_references: []
@@ -57,7 +57,7 @@ describe('workflowService', () => {
         it('should create request with generated ID', async () => {
             const data = {
                 title: 'New Request',
-                status: 'Draft' as const,
+                status: 'DRAFT' as const,
                 created_user_id: 'USER-002',
                 doc_url: '',
                 event_references: []

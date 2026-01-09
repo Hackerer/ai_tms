@@ -79,9 +79,11 @@ class TrackingManger:
         """创建需求单"""
         return self.app_service.create_request(tenant_id, group_id, title, creator_id, doc_url)
 
-    def get_requests(self, group_id):
-        """获取协作组下的需求单列表"""
-        return self.app_service.get_requests_by_group(group_id)
+    def get_requests(self, group_id=None):
+        """获取需求单列表（如果 group_id 为 None 则返回全量）"""
+        if group_id:
+            return self.app_service.get_requests_by_group(group_id)
+        return self.app_service.get_all_requests()
 
     def create_approval_task(self, request_id, node_name, approver_id):
         """创建审批任务"""

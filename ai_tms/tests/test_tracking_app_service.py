@@ -44,12 +44,12 @@ class TestTrackingAppService(unittest.TestCase):
         
         # 验证锁状态
         loaded_event = self.app_service.asset_repo.get_event_by_id("E1")
-        self.assertEqual(loaded_event.status, "Editing")
+        self.assertEqual(loaded_event.status, "EDITING")
         self.assertEqual(loaded_event.locked_by_request, req.id)
         
         # 4. 审批流
         task_id = self.app_service.create_approval_task(req.id, "业务审批", user_admin.id)
-        self.app_service.process_approval(task_id, tenant.id, user_admin.id, "Approved", "准许修改")
+        self.app_service.process_approval(task_id, tenant.id, user_admin.id, "APPROVED", "准许修改")
         
         # 5. 应用变更
         apply_success = self.app_service.apply_request(req.id, tenant.id, user_admin.id)
@@ -58,11 +58,11 @@ class TestTrackingAppService(unittest.TestCase):
         # 6. 最终验证
         final_event = self.app_service.asset_repo.get_event_by_id("E1")
         self.assertEqual(final_event.name, "view_course_v2")
-        self.assertEqual(final_event.status, "Online") # 自动解锁并回到在线状态
+        self.assertEqual(final_event.status, "ONLINE") # 自动解锁并回到在线状态
         self.assertIsNone(final_event.locked_by_request)
         
         final_req = self.app_service.flow_repo.get_request_by_id(req.id)
-        self.assertEqual(final_req.status, "Applied")
+        self.assertEqual(final_req.status, "APPLIED")
 
 if __name__ == '__main__':
     unittest.main()
